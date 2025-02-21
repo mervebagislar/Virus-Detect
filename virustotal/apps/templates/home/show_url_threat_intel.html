@@ -1,0 +1,17 @@
+<!-- home/upload.html -->
+
+{% extends "layouts/base.html" %}
+
+{% block title %}URL Tehdit Analizi{% endblock %}
+{% block stylesheets %}
+ 
+{% endblock stylesheets %}
+{% block content %}
+<div class="content">
+  <h1>URL Threat Intelligence</h1>
+  <p><strong>URL:</strong> {{ url }}</p>
+  <pre>{{ threat_data }}</pre>
+</div>
+{% endblock content %}
+{% block javascripts %}
+{% endblock javascripts %}

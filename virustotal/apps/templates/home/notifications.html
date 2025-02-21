@@ -1,0 +1,264 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ ASSETS_ROOT }}/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="{{ ASSETS_ROOT }}/img/favicon.png">
+    <title>
+        Django Dashboard Black - {% block title %}{% endblock %} | AppSeed
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800" rel="stylesheet"/>
+    <link href="https://use.fontawesome.com/releases/v5.0.6/css/all.css" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="{{ ASSETS_ROOT }}/css/nucleo-icons.css" rel="stylesheet"/>
+    <!-- CSS Files -->
+    <link href="{{ ASSETS_ROOT }}/css/black-dashboard.css?v=1.0.0" rel="stylesheet"/>
+    <link href="{{ ASSETS_ROOT }}/css/theme-switcher.css" rel="stylesheet"/>
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="{{ ASSETS_ROOT }}/demo/demo.css" rel="stylesheet"/>
+
+    <!-- Specific Page CSS goes HERE  -->
+    {% block stylesheets %}
+     <style>
+      .main-panel {
+      background-image: url("{% static 'assets/img/4.webp' %}"); /* Arka plan resmi yolu */
+      background-size: cover; /* Resmin tüm arka planı kaplamasını sağlar */
+      background-position: center; /* Resmi ortalar */
+      background-repeat: no-repeat; /* Resmin tekrar etmesini engeller */
+      background-attachment: fixed; /* Kaydırma sırasında arka planın sabit kalmasını sağlar */
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center
+  
+    }
+    .search {
+      background-color: #fff;
+      padding: 4px;
+      border-radius: 5px;
+      width: 70%;
+      
+      
+  }
+  
+  ::placeholder {
+      color: #eee;
+      opacity: 1
+  }
+  
+  .search-2 {
+      position: relative;
+      width: 100%
+  }
+  
+  .search-2 input {
+      height: 30px;
+      border: none;
+      width: 100%;
+      padding-left: 40px;
+      padding-right: 100px;
+      padding-top:20px;
+      padding-bottom:10px;
+  }
+  
+  .search-2 input:focus {
+      border-color: none;
+      box-shadow: none;
+      outline: none
+  }
+  
+  .search-2 i {
+      position: absolute;
+      top: 12px;
+      left: 10px;
+      font-size: 24px;
+      color:#813fa8
+  }
+  
+  .search-2 button {
+      position: absolute;
+      right: 1px;
+      top: 0px;
+      border: none;
+      height: 40px;
+      background-color: white;
+      color: #fff;
+      width: 40px;
+      border-radius: 4px;
+      
+     
+  }
+  .container{
+    padding-left:96px;
+  }
+  .process {
+    background-color: #813fa8 !important; 
+    position: relative;
+    right: 0px; /* Process butonunu en sağa yerleştirir */
+    left: 750px;
+    top: -65px;
+    height: 57px;
+    width: 142px;
+    border-radius: 5px;
+    border: none;
+    display: flex; /* Flexbox ile içeriği ortalar */
+    align-items: center;
+    justify-content: center;
+    
+}
+
+  @media (max-width:800px) {
+      .search-2 i {
+          left: 4px;
+          color:#813fa8;
+          
+          
+      }
+  
+      .search-2 input {
+          padding-left: 34px
+      }
+  
+      .search-2 button {
+        
+          height: 37px;
+          top: 5px;
+        
+      }
+      
+     
+  }
+  .file-upload-label {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 18px; /* Simge boyutu */
+    color:#813fa8; 
+    
+}
+
+.file-input {
+    display: none;
+    
+}
+
+.submit-button {
+  margin-top: 5px;
+  margin-right: 0px;
+   /* Butonu sola kaydırmak için sağa boşluk ekler */
+  background-color: #813fa8 !important; /* Mor renk */
+  color: #fff !important; /* Beyaz metin rengi */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  height: 45px !important; 
+  width: 120px !important; /* Butonun genişliğini artırır */
+  padding: 10px 10px; /* Butonun içindeki metni ortalar ve genişliğini artırır */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-button:hover {
+    background-color: #6d2a8a;
+}
+.submit-button i {
+  margin-right: 65px !important; /* Simge ve metin arasına boşluk ekler */
+}
+.test-button {
+  background-color: #813fa8 !important; 
+    position: relative;
+    color: #fff;
+    right: 0px; /* Process butonunu en sağa yerleştirir */
+    left: 750px;
+    top: -60px;
+    height: 60px;
+    width: 50px;
+    border-radius: 5px;
+    border: none;
+    display: flex; /* Flexbox ile içeriği ortalar */
+    align-items: center;
+    justify-content: center;
+}
+.test-button:hover {
+  background-color: pink;
+}
+    
+  
+     </style>
+    {% endblock stylesheets %}
+
+
+</head>
+<body class="">
+
+    <div class="wrapper">
+
+        {% include 'includes/navigation-home.html' %}
+
+        <div class="main-panel">
+
+            {% block content %}
+            
+            <div class="container"> 
+              <div class="search"> 
+                <div class="row">  
+                  <div class="col-md-12">
+                    <div class="search-2"> 
+                      <i class='fa fa-search' style="width:21px; opacity:0;" ></i>              
+                        <form id="multiActionForm" class="form-container" action="{% url 'upload_and_analyze' %}" 
+                        method="POST" enctype="multipart/form-data" id="uploadForm">
+                          {% csrf_token %}
+                          <input type="text" name="ip_address" placeholder="Search or scan a URL">
+                          <label for="file-upload" class="file-upload-label" >
+                            <i class="fas fa-paperclip"></i>
+                            <input id="file-upload" type="file" name="file" class="file-input" />
+                          </label>         
+                          <button type="button" onclick="submitForm('search_action')" class="test-button"> Ara</button>
+                          <button type="button" onclick="submitForm('upload_action')" class="submit-button">Dosya Yükle</button>
+                        </form>
+                      
+               
+                    </div> 
+                  </div>            
+                </div>  
+              </div>
+            
+            </div>
+        </div>
+            {% endblock content %}
+
+            {% include 'includes/footer-home.html' %}
+
+    </div>
+
+   
+
+    {% include 'includes/fixed-plugin.html' %}
+
+    {% include 'includes/scripts.html' %}
+
+    <!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+    <script>
+      function submitForm(actionType) {
+        const form = document.getElementById('multiActionForm');
+        // İşleme göre formun action değerini ayarla
+        if (actionType === 'search_action') {
+            form.action = "{% url 'get_ip_threat_intel' %}";  // Arama işlemi için URL
+            form.method = "POST";
+        } else if (actionType === 'upload_action') {
+            form.action = "{% url 'upload_and_analyze' %}";  // Dosya yükleme işlemi için URL
+            form.method = "POST";
+        }
+        form.submit();  // Formu gönder
+    }
+  </script>
+{% endblock javascripts %}
+
+
+</body>
+</html>

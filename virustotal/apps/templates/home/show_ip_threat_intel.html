@@ -1,0 +1,1008 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %}URL Tehdit Analizi{% endblock %}
+{% block stylesheets %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<style>
+  body {
+    background-image: url("{% static 'assets/img/2.png' %}"); /* Arka plan resmi yolu */
+    background-size: cover; /* Resmin kapsayıcıya sığmasını sağlar */
+    background-position: center; /* Resmin ortalanmasını sağlar */
+    background-repeat: no-repeat; /* Resmin tekrar etmesini engeller */
+    background-attachment: fixed;
+    color: #D0D0D5;
+    font-family: Arial, sans-serif;
+      
+  }
+  .card {
+     /* Kenar çizgilerini kaldır */
+    border-radius: 10px; /* Kart kenarlarını yuvarla */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover efektleri için geçiş animasyonları */
+    position: relative; /* Trend ikonları için */
+    overflow: hidden; /* Taşan öğeleri gizle */
+    margin: 20px auto !important;
+}
+
+.card:hover {
+    transform: translateY(-10px); /* Hover edildiğinde yukarı doğru hareket etsin */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Hover edildiğinde gölge ekle */
+}
+
+/* Kart İçeriği */
+.card-title {
+    font-size: 24px; /* Kart başlığı boyutu */
+    font-weight: 700; /* Kart başlığı kalınlığı */
+    margin: 10px; /* Kart başlığı alt boşluk */
+    display: flex; /* İçeriği yatayda hizala */
+    align-items: center; /* İkonla birlikte hizala */
+}
+
+.card-title img {
+    width: 25px; /* Bayrak ikonu genişliği */
+    height: auto; /* Oranlı yükseklik */
+    margin-left: 10px; /* Metin ile ikon arasına boşluk */
+}
+
+.card-text {
+    font-size: 16px; /* Kart metni boyutu */
+    color: #aaa; /* Kart metni rengi */
+    margin-bottom: 0; /* Kart metni alt boşluk */
+}
+
+/* Trend İkonları */
+.trend-icon {
+    position: absolute; /* Konumu sabitle */
+    right: 10px; /* Sağdan boşluk */
+    bottom: 10px; /* Alttan boşluk */
+    font-size: 20px; /* İkon boyutu */
+    animation: blink 2s infinite; /* İkon için animasyon ekle */
+}
+
+.text-success {
+    color: #28a745; /* Başarı rengi */
+}
+
+.text-danger {
+    color: #dc3545; /* Hata rengi */
+}
+.whois-card{
+    width:92%;
+    margin: 0 auto;
+}
+.whois-card h3{
+    margin:10px;
+}
+
+/* İkonlar için animasyon */
+@keyframes blink {
+    0%, 100% {
+        opacity: 1; /* Opaklık başlangıcı */
+    }
+    50% {
+        opacity: 0.5; /* Opaklık ortası */
+    }
+}
+.container {
+      margin-top:20px;
+      width: 100%;
+      margin: 0 auto;
+      padding-top: 20px;
+}
+h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #E5E5E5;
+}
+ 
+.analysis-overview-card {
+    
+    height:500px;
+    width: 100%; /* İstediğiniz genişlik */
+    margin: 0 auto; /* Ortaya hizala */
+     /* Maksimum genişlik */
+}
+.basic-properties{
+    height:500px;
+    border-radius:10px;
+    width: 100%; /* İstediğiniz genişlik */
+    margin: 0 auto; /* Ortaya hizala */
+    max-width: 900px; /* Maksimum genişlik */
+ }
+ .basic-properties h2{
+  padding:10px;
+ }
+.security-vendors-analysis-card {
+    width: 92%; /* İstediğiniz genişlik */
+    margin: 0 auto; /* Ortaya hizala */
+}
+
+.card h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #F5F5F5;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 10px;
+    border-bottom: 1px solid #3A3A55;
+}
+
+.table th {
+    text-align: left;
+    background-color: #3A3A55;
+    color: #D5D5DD;
+}
+
+.table td {
+    background-color: #29293F;
+}
+
+.map {
+    margin-bottom:-10px;
+    height: 500px; /* Haritanın yüksekliği */
+    width: 100%; /* Haritanın genişliği */
+    border-radius: 8px;
+}
+pre {
+      background-color: #29293F;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      overflow-y: auto; 
+      width: 800px;
+      max-height: 300px;
+      color: #D5D5DD;
+      font-family: 'Courier New', Courier, monospace;
+      box-sizing: border-box; /* Padding'i genişliğe dahil et */
+      white-space: pre-wrap; /* Taşmayı önlemek için satırları sar */
+}
+pre::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+pre::-webkit-scrollbar-thumb {
+    background-color: #4E4E6E;
+    border-radius: 8px;
+}
+pre::-webkit-scrollbar-track {
+    background-color: #2E2E3E;
+    border-radius: 8px;
+}
+.analysis-table-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+}
+.analysis-table {
+      width: 48%;
+      margin-bottom: 20px;
+}
+  .card.details-card{
+    width:92% !important;
+    margin: 0 auto;
+   
+}
+.card.details-card h1{
+   margin:20px;
+   
+}
+    /* Önceki stil kurallarını burada ekleyin */
+.chart-area {
+      width: 100%;
+      height: 100%;
+}
+   
+.row{
+        display:flex;
+}
+.trend-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 1.5em;
+}
+.network-icon {
+        width: 24px;    /* Genişlik ayarı */
+        height: 24px;   /* Yükseklik ayarı */
+        /* Eğer rengi değiştirilebilecek bir SVG kullanıyorsanız */
+        filter: invert(100%); /* Rengi beyaza çevirir (sadece SVG'de) */
+}
+.ipv4-icon {
+        width: 24px;    /* Genişlik ayarı */
+        height: 24px;   /* Yükseklik ayarı */
+        /* Eğer rengi değiştirilebilecek bir SVG kullanıyorsanız */
+        filter: invert(100%); /* Rengi beyaza çevirir (sadece SVG'de) */
+}
+      .custom-circle{
+        color:#a444b0
+      }
+      .custom-circle-1{
+        color:#e2aef6
+      }
+      .custom-circle-2{
+        color:#FF6384
+      }
+      .custom-circle-3{
+        color:#f5dcf9
+      }
+      .custom-circle-4{
+        color:#c8709c
+      }
+      .align-items-center td{
+        vertical-align: middle; /* Vertikal ortalama */
+            text-align: center; /* Yatay ortalama */
+      }
+      .weekly-card{
+        height:500px;
+        width: 100%; /* İstediğiniz genişlik */
+        margin: 0 auto; /* Ortaya hizala */
+     /* Maksimum genişlik */
+      }
+
+      .chart-row{
+        margin-bottom:40px;
+        display: flex;
+        flex-wrap: wrap; /* Eğer yeterli alan yoksa satıra devam eder */
+        gap: 10px; 
+      }
+      .analysisChartLine{
+        height:600px;
+      }
+      context = {
+        'otx_asn': otx_asn.title(),  # İlk harfleri büyüt
+        # Diğer context verileri...
+    }
+    #vt-details-table td, #vt-details-table th {
+        max-width: 200px; /* Maksimum genişliği sınırla */
+        overflow: hidden;
+        text-overflow: ellipsis; /* İçerik taşarsa, "..." gösterir */
+ 
+        overflow-wrap: break-word;
+    }
+    .text-wrapper {
+        position: relative;
+        max-width: 300px; /* Genişlik ihtiyaca göre ayarlanabilir */
+    }
+    .text-content {
+       /* Başlangıçta görünen kısmın yüksekliği */
+        overflow: hidden;
+        position: relative;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .text-content.expand {
+        max-height: none;
+        white-space: normal;
+        text-overflow: clip;
+    }
+    .show-more {
+        color: white;
+        cursor: pointer;
+        display: block;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+       /* Üç noktanın görünmesi için arka plan */
+        padding-left: 5px; /* Üç noktanın metinden ayrılması için boşluk */
+    }
+    .custom-card-content {
+        padding: 20px; /* İçerik boşluğu */
+        border: 3px solid purple;
+    }
+</style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="content">
+    <div class="card mt-3">
+        <div class="custom-card-content">
+            <div class="row row-group m-0">
+                <div class="col-12 col-lg-6 col-xl-3 border-light">
+                    <div class="card-body">
+                        <h5 class="custom-bg-color mb-0">
+                          Network 
+                          <span class="float-right">
+                            <img src="{% static 'assets/img/ip-adress.png' %}" class="network-icon">
+                          </span>
+                        </h5>
+                        <h4></h4>
+                        <h3 class="mb-0 text-white small-font">{{ otx_ip_address }} </h3>
+                      </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl-3 border-light">
+                    <div class="card-body">
+                      <h4 class="custom-bg-color mb-0">Country
+                         <span class="float-right">
+                            <i class="fa fa-flag"></i>
+                        </span>
+                      </h4>
+                      <h4></h4>
+                      <h3 class="mb-0 text-white small-font">{{otx_country_name}} 
+                        <img src=" {{ otx_flag_url }}" alt="{{ otx_country_name }} flag"></h3>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl-3 border-light">
+                    <div class="card-body">
+                      <h4 class="custom-bg-color mb-0" >Type
+                         <span class="float-right">
+                            <img src="{% static 'assets/img/ipv4.png' %}" class="ipv4-icon">
+                        </span>
+                      </h4>
+                      <h4></h4>
+                      <h3 class="mb-0 text-white small-font">{{otx_type}} </h3>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 col-xl-3 border-light">
+                    <div class="card-body">
+                      <h5 class="custom-bg-color mb-0">Autonomous System Number
+                        <span class="float-right"><i class="fa fa-envira"></i></span></h5>
+                      <h4></h4>
+                      <h4 class="mb-0 text-white small-font">{{otx_asn}} </h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>  
+        
+    <div class="container">
+      <div class="row">
+       <div class="col-lg-6">
+         <div class="card basic-properties" >
+            <h2>Basic Properties</h2>
+            <table class="table">
+                <tr>
+                    <th>Network</th>
+                    <td>{{otx_ip_address }}</td>
+                </tr>
+                <tr>
+                    <th>Autonomous System Number</th>
+                    <td>{{ otx_asn }}</td>
+                </tr>
+                <tr>
+                    <th>Regional Internet Registry</th>
+                    <td>{{ vt_rir }}</td>
+                </tr>
+                <tr>
+                    <th>Country</th>
+                    <td>
+                        <img src="{{ otx_flag_url }}" alt="{{ otx_country_name }} flag">
+                        {{otx_country_name}}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Continent</th>
+                    <td>{{ otx_continent_code }}</td>
+                </tr>
+                <tr>
+                    <th>City</th>
+                    <td>{{otx_city}}</td>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <td>{{ otx_type }}</td>
+                </tr>
+            </table>
+        </div>
+       </div>
+        <div class="col-lg-6">
+          <div class="card map-card">
+            <div id="map" class="map"></div>
+          </div>
+        </div>
+      </div> 
+    </div>
+
+    <div class=container>
+      <div class="row"> 
+         <div class="col-lg-6">
+           <div class="card weekly-card">
+            <div class="card-header">Weekly sales
+             <div class="card-action">
+             <div class="dropdown">
+             <a href="javascript:void();" class="dropdown-toggle dropdown-toggle-nocaret" data-toggle="dropdown">
+              <i class="icon-options"></i>
+             </a>
+             <div class="dropdown-menu dropdown-menu-right">
+                <a class="dropdown-item" href="javascript:void();">Action</a>
+                <a class="dropdown-item" href="javascript:void();">Another action</a>
+                <a class="dropdown-item" href="javascript:void();">Something else here</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="javascript:void();">Separated link</a>
+              </div>
+              </div>
+              </div>
+           </div>
+           <div class="card-body">
+		     <div class="chart-container-2">
+               <canvas id="donutChart"></canvas>
+			  </div>
+           </div>
+           <div class="container chart-row">
+            <div class="row">
+                <div class="col">
+                    <i class="fa fa-circle custom-circle mr-2"></i> Malware
+                </div>
+                <div class="col">
+                    <i class="fa fa-circle custom-circle-1 mr-2"></i> Suspicious
+                </div>
+                <div class="col">
+                    <i class="fa fa-circle custom-circle-2 mr-2"></i> Malicious
+                </div>
+                <div class="col">
+                    <i class="fa fa-circle custom-circle-3 mr-2"></i> Clean
+                </div>
+                <div class="col">
+                    <i class="fa fa-circle custom-circle-4 mr-2"></i> Unrated
+                </div>
+            </div>
+        </div>
+        
+           </div>
+         </div> 
+         <div class="col-lg-6">    
+            <div class="card analysis-overview-card">
+                <div class="card-header">
+                    <h5 class="card-category">Analysis Overview</h5>
+                    <h3 class="card-title">
+                        <i class="tim-icons icon-bell-55 text-primary"></i> Malware Analysis</h3>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area analysis-chart">
+                        <canvas id="analysisChartLine"></canvas>
+                    </div>
+                </div>
+            </div>    
+        </div> 
+      </div>         
+    </div>
+    
+    <!-- Security Vendors' Analysis -->
+    <div class="card security-vendors-analysis-card">
+        <div class="card-header">
+            <h4 class="card-title">Security Vendors' Analysis</h4>
+        </div>
+        <div class="card-body">
+            <div class="analysis-table-container">
+                <!-- İlk yarı için tablo -->
+                <table class="table analysis-table">
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Analysis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in vt_analysis_results|slice:":47" %}
+                        <tr>
+                            <td>{{ result.engine_name }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if result.result == 'malicious' %}
+                                        badge-danger
+                                    {% elif result.result == 'suspicious' %}
+                                        badge-warning
+                                    {% elif result.result == 'unrated' %}    
+                                       badge-light
+                                    {% elif result.result == 'malware' %}    
+                                        badge-danger
+                                    {% else %}
+                                        badge-success
+                                    {% endif %}
+                                ">{{ result.result }}
+                                {% if result.result == 'malicious' or result.result == 'suspicious' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                                {% elif result.result == 'clean' %}
+                                <i class="fa fa-check-circle"></i>
+                                {% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- İkinci yarı için tablo -->
+                <table class="table analysis-table">
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Analysis</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for result in vt_analysis_results|slice:"47:" %}
+                        <tr>
+                            <td>{{ result.engine_name }}</td>
+                            <td>
+                                <span class="badge 
+                                    {% if result.result == 'malicious' %}
+                                        badge-danger
+                                    {% elif result.result == 'suspicious' %}
+                                        badge-warning
+                                    {% elif result.result == 'unrated' %}    
+                                       badge-light
+                                    {% else %}
+                                        badge-success
+                                    {% endif %}
+                                ">{{ result.result }}
+                                {% if result.result == 'malicious' or result.result == 'suspicious' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                                {% elif result.result == 'clean' %}
+                                <i class="fa fa-check-circle"></i>
+                                {% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+            </div>                  
+        </div>
+    </div>
+
+    <div class="card whois-card">
+    <h3>WHOIS Information</h3>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Registrar</th>
+                <td>{{ whois.registrar }}</td>
+            </tr>
+            <tr>
+                <th>Creation Date</th>
+                <td>{{ whois.creation_date }}</td>
+            </tr>
+            <tr>
+                <th>Expiration Date</th>
+                <td>{{ whois.expiration_date }}</td>
+            </tr>
+            <tr>
+                <th>Name Servers</th>
+                <td>{{ whois.name_servers }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ whois.status }}</td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+
+<div class="card details-card">
+    <h1>VirusTotal Details</h1>
+    <table id="vt-details-table" class="display">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>IP Address</td>
+            <td>{{ vt_ip_address }}</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>{{ vt_type }}</td>
+        </tr>
+        <tr>
+            <td>Continent</td>
+            <td>{{ vt_continent }}</td>
+        </tr>
+        <tr>
+            <td>AS Owner</td>
+            <td>{{ vt_as_owner }}</td>
+        </tr>
+        <tr>
+            <td>Country</td>
+            <td>{{ vt_country }}</td>
+        </tr>
+        <tr>
+            <td>Network</td>
+            <td>{{ vt_network }}</td>
+        </tr>
+        <tr>
+            <td>RIR</td>
+            <td>{{ vt_rir }}</td>
+        </tr>
+        <tr>
+            <td>Malicious</td>
+            <td>{{ vt_malicious }}</td>
+        </tr>
+        <tr>
+            <td>Suspicious</td>
+            <td>{{ vt_suspicious }}</td>
+        </tr>
+        <tr>
+            <td>Undetected</td>
+            <td>{{ vt_undetected }}</td>
+        </tr>
+        <tr>
+            <td>Harmless</td>
+            <td>{{ vt_harmless }}</td>
+        </tr>
+        <tr>
+            <td>Timeout</td>
+            <td>{{ vt_timeout }}</td>
+        </tr>
+        <tr>
+            <td>Details</td>
+            <td>{{ vt_details }}</td>
+        </tr>
+        <tr>
+            <td>Severity</td>
+            <td>{{ vt_severity }}</td>
+        </tr>
+        <tr>
+            <td>Timestamp</td>
+            <td>{{ vt_timestamp }}</td>
+        </tr>
+        <tr>
+            <td>Title</td>
+            <td>{{ vt_title }}</td>
+        </tr>
+        <tr>
+            <td>Reputation</td>
+            <td>{{ vt_reputation }}</td>
+        </tr>
+        <tr>
+            <td>JARM</td>
+            <td>{{ vt_jarm }}</td>
+        </tr>
+        <tr>
+            <td>Signature Algorithm</td>
+            <td>{{ vt_signature_algorithm }}</td>
+            
+        </tr>
+        <tr>
+            <td>Signature</td>
+            <td>{{ vt_signature }}</td>
+        </tr>
+        <tr>
+            <td>Key Usage</td>
+            <td>{{ vt_key_usage }}</td>
+        </tr>
+        <tr>
+            <td>Extended Key Usage</td>
+            <td>{{ vt_extended_key_usage }}</td>
+        </tr>
+        <tr>
+            <td>CA</td>
+            <td>{{ vt_CA }}</td>
+        </tr>
+        <tr>
+            <td>Subject Key Identifier</td>
+            <td>{{ vt_subject_key_identifier }}</td>
+        </tr>
+        <tr>
+            <td>Key ID</td>
+            <td>{{ vt_keyid }}</td>
+        </tr>
+        <tr>
+            <td>OCSP</td>
+            <td>{{ vt_OCSP }}</td>
+        </tr>
+        <tr>
+            <td>CA Issuers</td>
+            <td>{{ vt_Issuers }}</td>
+        </tr>
+        <tr>
+            <td>Subject Alternative Name</td>
+            <td>{{ vt_subject_alternative_name }}</td>
+        </tr>
+        <tr>
+            <td>Certificate Policies</td>
+            <td>{{ vt_certificate_policies }}</td>
+        </tr>
+        <tr>
+            <td>CRL Distribution Points</td>
+            <td>{{ vt_crl_distribution_points }}</td>
+        </tr>
+        <tr>
+            <td>Algorithm</td>
+            <td>{{ vt_algorithm }}</td>
+        </tr>
+        <tr>
+            <td>Modulus</td>
+            <td> 
+                <div class="text-wrapper">
+                    <div class="text-content" id="textContainer">
+                        {{ vt_modulus }}
+                    </div>
+                    <div class="show-more" id="showMore">...</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>Exponent</td>
+            <td>{{ vt_exponent }}</td>
+        </tr>
+        <tr>
+            <td>Key Size</td>
+            <td>{{ vt_key_size }}</td>
+        </tr>
+        <tr>
+            <td>Thumbprint SHA256</td>
+            <td>{{ vt_thumbprint_sha256 }}</td>
+        </tr>
+        <tr>
+            <td>Thumbprint</td>
+            <td>{{ vt_thumbprint }}</td>
+        </tr>
+        <tr>
+            <td>Serial Number</td>
+            <td>{{ vt_serial_number }}</td>
+        </tr>
+        <tr>
+            <td>C</td>
+            <td>{{ vt_C }}</td>
+        </tr>
+        <tr>
+            <td>O</td>
+            <td>{{ vt_O }}</td>
+        </tr>
+        <tr>
+            <td>CN</td>
+            <td>{{ vt_CN }}</td>
+        </tr>
+    </tbody>
+    </table>
+</div>
+
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- DataTables JS -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const analysisCounts = {
+            malicious: 0,
+            suspicious: 0,
+            clean: 0,
+            unrated: 0,
+            malware: 0
+        };
+    
+        // Tablo satırlarından sonuçları al
+        document.querySelectorAll('.analysis-table tbody tr').forEach(row => {
+            const analysis = row.querySelector('td:nth-child(2) span').innerText.trim().toLowerCase();
+            if (analysisCounts.hasOwnProperty(analysis)) {
+                analysisCounts[analysis]++;
+            }
+        });
+    
+        // Chart.js ile çizgi grafiği oluşturma
+        const ctx = document.getElementById('analysisChartLine').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',  // Çizgi grafiği
+            data: {
+                labels: ['Malicious', 'Suspicious', 'Clean', 'Unrated', 'Malware'],
+                datasets: [{
+                    label: 'Analysis Results',
+                    data: [
+                        analysisCounts.malicious,
+                        analysisCounts.suspicious,
+                        analysisCounts.clean,
+                        analysisCounts.unrated,
+                        analysisCounts.malware
+                    ],
+                    fill: false,  // Alan doldurulmayacak
+                    borderColor: 'rgba(75, 192, 192, 1)',  // Çizgi rengi
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Nokta arka plan rengi
+                    tension: 0.1,  // Çizgi eğrisi (smoothness)
+                    pointBackgroundColor: 'rgba(75, 192, 192, 1)',  // Nokta rengi
+                    pointBorderColor: '#fff',  // Nokta kenarlığı rengi
+                    pointRadius: 5,  // Nokta büyüklüğü
+                    pointHoverRadius: 7,  // Üzerine gelindiğinde nokta büyüklüğü
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true  // Y ekseni sıfırdan başlasın
+                    }
+                }
+            }
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // API'den gelen latitude ve longitude değerlerini buraya ekleyeceksiniz
+        const latitude = {{ otx_latitude }};
+        const longitude = {{ otx_longitude }};
+    
+        // Leaflet haritasını başlat
+        const map = L.map('map').setView([latitude, longitude], 10);
+    
+        // OpenStreetMap katmanını ekle
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+    
+        // Konum marker'ını ekle
+        L.marker([latitude, longitude]).addTo(map)
+            .bindPopup('Konum: ' + latitude + ', ' + longitude)
+            .openPopup();
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Kart verilerini almak için bir nesne
+        const analysisCounts = {
+            malicious: 0,
+            suspicious: 0,
+            clean: 0,
+            unrated: 0,
+            malware: 0
+        };
+    
+        // Tablo satırlarından sonuçları al
+        document.querySelectorAll('.analysis-table tbody tr').forEach(row => {
+            const analysis = row.querySelector('td:nth-child(2) span').innerText.trim().toLowerCase();
+            if (analysisCounts.hasOwnProperty(analysis)) {
+                analysisCounts[analysis]++;
+            }
+        });
+    
+        // Donut grafiği oluşturma
+        const ctx = document.getElementById('donutChart2').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Malicious', 'Suspicious', 'Clean', 'Unrated', 'Malware'],
+                label: 'Analysis Results',
+                datasets: [{
+                    data: [
+                        analysisCounts.malicious,
+                        analysisCounts.suspicious,
+                        analysisCounts.clean,
+                        analysisCounts.unrated,
+                        analysisCounts.malware
+                    ],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 205, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 205, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return tooltipItem.label + ': ' + tooltipItem.raw;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    });
+   
+    document.addEventListener('DOMContentLoaded', function() {
+        // Trend ikonlarını değiştiren bir fonksiyon
+        function updateTrendIcons() {
+            document.querySelectorAll('.trend-icon').forEach(function(icon) {
+                const isPositive = Math.random() > 0.5; // Rastgele bir true/false değeri
+                icon.classList.toggle('text-success', isPositive); // Pozitif değer için yeşil yap
+                icon.classList.toggle('text-danger', !isPositive); // Negatif değer için kırmızı yap
+                icon.innerHTML = isPositive ? '<i class="fas fa-arrow-up"></i>' : '<i class="fas fa-arrow-down"></i>'; // İkonu güncelle
+            });
+        }
+    
+        // İlk olarak ikonları güncelle
+        updateTrendIcons();
+    
+        // 5 saniyede bir ikonları güncelle
+        setInterval(updateTrendIcons, 5000);
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        // Analiz sonuçlarını saymak için başlangıç değerlerini belirleyin
+        const analysisCounts = {
+            malicious: 0,
+            suspicious: 0,
+            clean: 0,
+            unrated: 0,
+            malware: 0
+        };
+    
+        // Tablo satırlarından sonuçları al
+        document.querySelectorAll('.analysis-table tbody tr').forEach(row => {
+            const analysis = row.querySelector('td:nth-child(2) span').innerText.trim().toLowerCase();
+            if (analysisCounts.hasOwnProperty(analysis)) {
+                analysisCounts[analysis]++;
+            }
+        });
+    
+        // Chart.js için Doughnut Chart konfigürasyonu
+        const ctx = document.getElementById('donutChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'doughnut',  // Grafik tipi
+            data: {
+                labels: ['Malicious', 'Suspicious', 'Clean', 'Unrated', 'Malware'],  // Kategoriler
+                datasets: [{
+                    data: Object.values(analysisCounts),  // Tablo verilerine göre kategorilere ait dinamik veriler
+                    backgroundColor: [
+                        '#FF6384',  // Malicious
+                        '#e2aef6',  // Suspicious
+                        '#f5dcf9',  // Clean
+                        '#c8709c',  // Unrated
+                        '#a444b0'   // Malware
+                    ],
+                    hoverBackgroundColor: [
+                        '#FF6384',  // Malicious Hover
+                        '#FFCE56',  // Suspicious Hover
+                        '#7c379e',  // Clean Hover
+                        '#a47aef',  // Unrated Hover
+                        '#4BC0C0'   // Malware Hover
+                    ],
+                    borderWidth: 0  // Kenarlık kalınlığı
+                }]
+            },
+            options: {
+                responsive: true,  // Duyarlılık ayarı
+                maintainAspectRatio: false,  // Oran koruma
+                cutout: '70%',  // Orta boşluk boyutu
+                plugins: {
+                    legend: {
+                        display: false  // Legend görünürlüğü
+                    }
+                }
+            }
+        });
+    });
+    
+    
+</script>
+<script>
+    $(document).ready(function() {
+        $('#vt-details-table').DataTable({
+            "paging": false, // Sayfalama yok
+            "searching": true, // Arama yok
+            "info": false, // Bilgi kısmını gizle
+            "ordering": true // Sıralama yok
+        });
+    });
+    </script>
+    <script>
+        document.getElementById('showMore').addEventListener('click', function() {
+            var container = document.getElementById('textContainer');
+            if (container.classList.contains('expand')) {
+                container.classList.remove('expand');
+                this.textContent = '...'; // Üç noktayı tekrar göster
+            } else {
+                container.classList.add('expand');
+                this.textContent = '↩'; // Kısaltmayı gösteren bir simge
+            }
+        });
+    </script>
+    
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+{% endblock javascripts %}

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Spam Detection Results</title>
+</head>
+<body>
+    <h1>Spam Detection Results</h1>
+    
+    {% if error %}
+        <p>Error: {{ error }}</p>
+    {% else %}
+        <h2>Email Text:</h2>
+        <p>{{ email_text }}</p>
+        
+        <h2>Predictions:</h2>
+        <ul>
+            {% for model, prediction in predictions.items %}
+                <li>{{ model }}: {{ prediction }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    
+    <a href="/">Go back</a>
+</body>
+</html>

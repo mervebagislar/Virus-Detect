@@ -1,0 +1,68 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}ChatBot{% endblock %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+  #chat {
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      width: 400px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+  #messages {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+  }
+  #messageInput {
+      width: calc(100% - 80px);
+  }
+  button {
+      width: 70px;
+  }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="content">
+<div id="chat">
+  <div id="messages"></div>
+  <input type="text" id="messageInput" placeholder="Type a message..." />
+  <button onclick="sendMessage()">Send</button>
+</div>
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<script>
+  async function sendMessage() {
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value;
+      if (!message) return;
+
+      const response = await fetch('/chat/', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ message }),
+      });
+
+      const data = await response.json();
+      displayMessage(data);
+      messageInput.value = '';
+  }
+
+  function displayMessage(data) {
+      const messagesDiv = document.getElementById('messages');
+      const messageElement = document.createElement('div');
+      messageElement.textContent = data.response || 'Error: ' + (data.error || 'Unknown error');
+      messagesDiv.appendChild(messageElement);
+  }
+</script>
+{% endblock javascripts %}

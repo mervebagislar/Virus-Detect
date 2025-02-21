@@ -1,0 +1,870 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %}Dosya Analizi{% endblock %}
+{% block stylesheets %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<style>
+  body {
+    
+    background-size: cover; /* Resmin kapsayıcıya sığmasını sağlar */
+    background-position: center; /* Resmin ortalanmasını sağlar */
+    background-repeat: no-repeat; /* Resmin tekrar etmesini engeller */
+    background-attachment: fixed;
+    color: #D0D0D5;
+    font-family: Arial, sans-serif;
+      
+  }
+  .card {
+     /* Kenar çizgilerini kaldır */
+    border-radius: 10px; /* Kart kenarlarını yuvarla */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover efektleri için geçiş animasyonları */
+    position: relative; /* Trend ikonları için */
+    overflow: hidden; /* Taşan öğeleri gizle */
+    margin: 20px auto !important;
+}
+
+.card:hover {
+    transform: translateY(-10px); /* Hover edildiğinde yukarı doğru hareket etsin */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Hover edildiğinde gölge ekle */
+}
+
+/* Kart İçeriği */
+.card-title {
+    font-size: 24px; /* Kart başlığı boyutu */
+    font-weight: 700; /* Kart başlığı kalınlığı */
+    margin: 10px; /* Kart başlığı alt boşluk */
+    display: flex; /* İçeriği yatayda hizala */
+    align-items: center; /* İkonla birlikte hizala */
+}
+
+.card-title img {
+    width: 25px; /* Bayrak ikonu genişliği */
+    height: auto; /* Oranlı yükseklik */
+    margin-left: 10px; /* Metin ile ikon arasına boşluk */
+}
+
+.card-text {
+    font-size: 16px; /* Kart metni boyutu */
+    color: #aaa; /* Kart metni rengi */
+    margin-bottom: 0; /* Kart metni alt boşluk */
+}
+
+/* Trend İkonları */
+.trend-icon {
+    position: absolute; /* Konumu sabitle */
+    right: 10px; /* Sağdan boşluk */
+    bottom: 10px; /* Alttan boşluk */
+    font-size: 20px; /* İkon boyutu */
+    animation: blink 2s infinite; /* İkon için animasyon ekle */
+}
+
+.text-success {
+    color: #28a745; /* Başarı rengi */
+}
+
+.text-danger {
+    color: #dc3545; /* Hata rengi */
+}
+
+.container {
+      margin-top:20px;
+      width: 100%;
+      margin: 0 auto;
+      padding-top: 20px;
+}
+h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #E5E5E5;
+}
+ 
+.card h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #F5F5F5;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 10px;
+    border-bottom: 1px solid #3A3A55;
+}
+
+.table th {
+    text-align: left;
+    background-color: #3A3A55;
+    color: #D5D5DD;
+}
+
+.table td {
+    background-color: #29293F;
+}
+pre {
+      background-color: #29293F;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      overflow-y: auto; 
+      width: 800px;
+      max-height: 300px;
+      color: #D5D5DD;
+      font-family: 'Courier New', Courier, monospace;
+      box-sizing: border-box; /* Padding'i genişliğe dahil et */
+      white-space: pre-wrap; /* Taşmayı önlemek için satırları sar */
+}
+pre::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+pre::-webkit-scrollbar-thumb {
+    background-color: #4E4E6E;
+    border-radius: 8px;
+}
+pre::-webkit-scrollbar-track {
+    background-color: #2E2E3E;
+    border-radius: 8px;
+}
+.analysis-table-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+}
+
+.row{
+  display:flex;
+}
+    
+context = {
+  'otx_asn': otx_asn.title(),  # İlk harfleri büyüt
+        # Diğer context verileri...
+}
+.text-wrapper {
+        position: relative;
+        max-width: 300px; /* Genişlik ihtiyaca göre ayarlanabilir */
+}
+
+.overview-container {
+      max-width: 40%;
+      margin: 0 auto;
+   
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+  
+.overview-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+}  
+.overview-table {
+      display: flex;
+      justify-content: space-between;
+      gap: 40px;
+}
+  
+.overview-column {
+      width: 34%;
+}
+  
+.overview-column div {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #1f4068;
+}
+  
+.overview-column strong {
+      color: #ccc;
+}
+  
+.overview-column span {
+      color: #fff;
+}
+.status {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.badge {
+    background-color: #e94560;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.community-vote {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #16213e;
+    color: #fff;
+}
+
+tbody tr:hover {
+    background-color: #1f4068;
+}
+
+.badge-danger {
+  background-color: #d00300; /* Kırmızı (malicious, malware) */
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.badge-warning {
+  background-color: #f0ad4e; /* Turuncu (suspicious) */
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.badge-success {
+  background-color: #008a00; /* Yeşil (clean) */
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  text:
+}
+
+.badge-light {
+  background-color: #ed6706; /* (type-unsupported) */
+  color: #333;
+  padding: 5px;
+  border-radius: 4px;
+}
+.header {
+  display: flex;
+  align-items: center; /* Dikey olarak ortalamak için */
+  justify-content: space-between; /* Aradaki boşluğu eşit dağıtmak için */
+}
+
+/* Durum ve topluluk oylarının hizalanması */
+.status, .community-vote {
+  display: flex;
+  align-items: center; /* Dikey hizalamak için */
+}
+
+/* Topluluk oyları butonlarının hizalanması */
+.community-vote button {
+  margin-left: 10px; /* Butonlar arasına boşluk eklemek için */
+}
+.threats-detected{
+  width: 92%; /* İstediğiniz genişlik */
+  margin: 0 auto; /* Ortaya hizala */
+}
+.processed-hash {
+
+  padding: 20px;
+  border-radius: 8px;
+  color: #ffffff;
+  font-family: Arial, sans-serif;
+}
+.hash-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.hash-value {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.not-available {
+  color: #d1d1d1;
+}
+.add-coo {
+  background-color: transparent;
+  color: #4A90E2;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.hash-details {
+  display: flex;
+  gap: 20px;
+}
+.feature {
+  background-color: #2a3344;
+  padding: 10px;
+  border-radius: 5px;
+  width: 230px;
+  text-align: center;
+}
+
+.feature .label {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.feature .status {
+  font-weight: bold;
+}
+
+.threat-detected {
+  color: #ff4f4f;
+}
+
+.no-results, .no-sanitization, .no-vulns {
+  color: #9b9b9b;
+}
+
+/* Example icons (replace with your actual icons) */
+.icon {
+  display: block;
+  margin: 0 auto 10px auto;
+  width: 32px;
+  height: 32px;
+  background-color: #4A90E2;
+  border-radius: 50%;
+}
+
+.sandbox-icon {
+  background-color: #9b9b9b;
+}
+
+.cdr-icon {
+  background-color: #9b9b9b;
+}
+
+.dlp-icon {
+  background-color: #9b9b9b;
+}
+
+.vuln-icon {
+  background-color: #9b9b9b;
+}
+.multiscanning-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  
+    padding: 15px;
+    border-radius: 8px;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+.multiscanning-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.status {
+    margin-top: 5px;
+}
+
+.threat-detected {
+    background-color: #ff4f4f;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.engines {
+    margin-top: 10px;
+    font-size: 24px;
+}
+
+.engines .detected {
+    color: #ff4f4f;
+    font-weight: bold;
+}
+
+.engines .total {
+    font-size: 16px;
+    color: #9b9b9b;
+}
+
+.community-vote {
+    display: flex;
+    align-items: center;
+}
+
+.vote-buttons {
+    display: flex;
+    gap: 10px;
+    margin-left: 10px;
+}
+
+.vote-buttons button {
+    background-color: transparent;
+    color: #9b9b9b;
+    border: 1px solid #4a4a4a;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.vote-buttons button:hover {
+    background-color: #4a90e2;
+    color: white;
+    border-color: #4a90e2;
+}
+
+.thumb-up:hover, .thumb-down:hover {
+    background-color: #4a90e2;
+    color: white;
+}
+.overview-column div {
+  padding: 5px 10px; /* Padding'i küçült */
+}
+
+.overview-column ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+.overview-column span {
+  display: block;
+  overflow: hidden; /* Taşmayı gizle */
+  text-overflow: ellipsis; /* Taşan metni üç nokta ile göster */
+  white-space: nowrap; /* Tek satıra sığdır */
+}
+.overview-table {
+  display: flex;
+  flex-wrap: wrap; /* İçerik taşarsa bir alt satıra geçsin */
+}
+
+.overview-column {
+  flex: 1; /* Kolonların eşit genişlikte olmasını sağlar */
+  min-width: 550px; /* Minimum genişlik ayarla */
+}
+
+.overview-column div {
+  margin-bottom: 10px; /* Satırlar arasında boşluk bırak */
+}
+.overview-container {
+  max-width: 100%; /* Maksimum genişliği sınırlama */
+  width: 40%; /* Genişliği %100 yaparak kullanılabilir alanı artırma */
+}
+@media (max-width: 768px) {
+  .overview-column {
+      flex-basis: 100%; /* Küçük ekranlarda tam genişlik */
+  }
+}
+.custom-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Kartın genişliğini belirle */
+  margin: 0; /* Varsayılan ortalama stilini sıfırla */
+}
+
+.card-header h2 {
+  margin-bottom: 5px;
+  font-size: 1.5em;
+}
+.card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.div.flex.flex-col.w-1/2 {
+  width: 100%;
+}
+div.overview-table.flex.flex-col{
+  width:570px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  font-weight: bold;
+}
+
+.icon-container {
+  width: 30%;
+  
+}
+
+.icon-container img {
+  width: 100%;
+  height: auto;
+  filter: invert(1);
+}
+
+.button-container {
+  text-align: right;
+}
+
+.btn-download {
+  padding: 10px 20px;
+  background-color: #3e4a56;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-download:hover {
+  background-color: #506070;
+}
+.file-container {
+  display: flex;
+  justify-content: space-between; /* İçerikleri yatayda yay */
+  align-items: center; /* Dikeyde ortala */
+  /* İçeriklerin etrafında boşluk bırak */
+
+  border-radius: 8px; /* Köşe yuvarlama */
+}
+
+.file-icon img {
+  width: 50px;
+  
+  filter: brightness(0) invert(1);
+}
+
+.file-details {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.file-name {
+  font-size: 1.2em;
+  color: #fff;
+}
+
+.availability {
+  color: #f39c12;
+}
+
+.add-coo {
+  color: #3498db;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.hash-details {
+  margin-bottom: 10px;
+}
+
+.hash-label {
+  font-weight: bold;
+}
+
+.hash-value {
+  color: #e74c3c;
+}
+
+.file-tag {
+  color: #95a5a6;
+}
+.multiscan-icon {
+  width: 35px; /* İkon boyutunu ayarla */
+  height: auto; /* Yükseklik otomatik ayarlanır */
+  margin-right: 8px; /* Metin ile aralarına boşluk ekle */
+  vertical-align: middle; /* Dikey hizalamayı ayarla */
+  filter: brightness(0) invert(1);
+}
+.flex {
+  display: flex; /* Flexbox ile düzenleme */
+}
+
+.flex-row {
+  flex-direction: row; /* Öğeleri yatay diz */
+}
+
+.flex-col {
+  flex-direction: column; /* Öğeleri dikey diz */
+}
+
+.w-1/2 {
+  width: 50%; /* Her bölümün genişliğini ayarla */
+}
+
+.overview-container {
+  margin-top: 20px; /* Üst kısımda boşluk bırak */
+}
+
+.overview-table {
+  display: flex; /* Sütunları yan yana dizmek için */
+  justify-content: space-between; /* Aralarındaki boşlukları eşit dağıt */
+}
+
+/* Tablo stil ayarları */
+table {
+  width: 100%; /* Tablonun genişliğini tam yap */
+  border-collapse: collapse; /* Kenarları birleştir */
+}
+
+th, td {
+  border: 1px solid #ddd; /* Tablo hücrelerine kenar ekle */
+  padding: 8px; /* Hücrelerde iç boşluk bırak */
+}
+
+th {
+   /* Başlık hücrelerinin arka plan rengi */
+  text-align: left; /* Başlıkları sola hizala */
+}
+
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="content">
+  <div class="file-container">
+    <div class="file-icon">
+      <img src="{% static 'assets/img/folder.png' %}" class="file-icon">
+        
+    </div>
+    <div class="file-details">
+        <span class="file-name">{{meaningful_name}}</span>
+      
+    </div>
+    <div class="hash-details">
+        <span class="hash-label">SHA-256:</span>
+        <span class="hash-value">136DB9A497385C7F48289EA02946AA9A03AFCEB0B52AEAD07A9CDEFA2F0B4F32</span>
+    </div>
+    <div class="file-tag">
+        <span class="tag">Etiketler: jpg</span>
+    </div>
+</div>
+  <div class="processed-hash">
+    <div class="hash-info">
+        
+        <span class="label"><i class="fa-solid fa-file"></i>Processed hash</span>
+        <span class="hash-value">68694f33ed7bcc8f73131002f41bf234</span>
+        <span class="status not-available">(Country of Origin)</span>
+        <button class="add-coo">Add COO</button>
+    </div>
+    <div class="hash-details">
+        <div class="feature multiscan">
+            <img src="{% static 'assets/img/qr.png' %}" class="multiscan-icon" alt="Multiscanning Icon">
+            <span class="label">Multiscanning</span>
+            <span class="status threat-detected">Threats detected</span>
+        </div>
+        <div class="feature sandbox">
+            <span class="icon sandbox-icon"></span>
+            <span class="label">Adaptive Sandbox</span>
+            <span class="status no-results">No Results Available</span>
+        </div>
+        <div class="feature deep-cdr">
+            <span class="icon cdr-icon"></span>
+            <span class="label">Deep CDR™</span>
+            <span class="status no-sanitization">No Sanitization Available</span>
+        </div>
+        <div class="feature proactive-dlp">
+            <span class="icon dlp-icon"></span>
+            <span class="label">Proactive DLP</span>
+            <span class="status no-results">No Results Available</span>
+        </div>
+        <div class="feature vulnerabilities">
+            <span class="icon vuln-icon"></span>
+            <span class="label">Vulnerabilities</span>
+            <span class="status no-vulns">No Vulnerabilities Found</span>
+        </div>
+    </div>
+  </div>
+
+
+  <div class="flex flex-row">
+    <!-- Sol Kolon: Multiscanning ve Tablo -->
+    <div class="flex flex-col w-1/2">
+        <div class="multiscanning-section">
+            <!-- Multiscanning Bilgileri -->
+            <div class="multiscanning-info">
+                <span class="label">Multiscanning</span>
+                <div class="status">
+                    <span class="threat-detected">Threats detected</span>
+                </div>
+            </div>    
+            <div class="engines-detect">
+                <div class="engines">
+                    <span class="detected">{{malware_votes}}</span>
+                    <span class="total">/{{total_votes}} ENGINES</span>
+                </div>
+            </div>
+            <div class="community-vote">
+                <span>Community vote:</span>
+                <div class="vote-buttons">
+                    <button class="thumb-up">👍 0</button>
+                    <button class="thumb-down">👎 0</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tablonun yeri -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Engine Name</th>
+                        <th>Verdict</th>
+                        <th>Last engine update</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for result in vt_analysis_results %}
+                    <tr>
+                        <td>{{ result.engine_name }}</td>
+                        <td>
+                            <span class="threat 
+                                {% if result.category == 'malicious' %}
+                                    badge-danger
+                                {% elif result.category == 'suspicious' %}
+                                    badge-warning
+                                {% elif result.category == 'type-unsupported' %}    
+                                    badge-light
+                                {% elif result.category == 'malware' %}    
+                                    badge-danger
+                                {% else %}
+                                    badge-success
+                                {% endif %}"
+                            >{{ result.category }}
+                            {% if result.category == 'malicious' or result.category == 'suspicious' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% elif result.category == 'Undetected' %}
+                                <i class="fa fa-check-circle"></i>
+                            {% endif %}
+                            </span>
+                        </td>
+                        <td>{{ result.engine_update }}</td>
+                    </tr>
+                    {% endfor %}         
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Sağ Kolon: Dosya Özeti -->
+    <div class="overview-container w-1/2">
+        <h2>File Overview</h2>
+        <div class="overview-table flex flex-col">
+            <div class="overview-column">
+                <div><strong>File Type</strong> <span>{{file_type}}</span></div>               
+                <div><strong>File Size</strong> <span>{{size}}</span></div>
+                <div><strong>SSDEEP</strong> <span>{{ ssdeep }}</span></div>
+                <div><strong>Magika</strong> <span>{{ magika }}</span></div>
+                <div><strong>Tags</strong> <span>{{ tags }}</span></div>
+                <div><strong>TRID</strong> <span> 
+                    <ul>
+                        {% for item in trid %}
+                            <li>{{ item.file_type }} ({{ item.probability }}%)</li>
+                        {% endfor %}
+                    </ul>
+                </span></div>
+                <div><strong>Type Extension</strong> <span>{{ type_extension }}</span></div>
+                <div><strong>Type Tag</strong> <span>{{ type_tag }}</span></div>
+                <div><strong>TLSH</strong> <span>{{ tlsh }}</span></div>
+                <div><strong>Meaningful Name</strong> <span>{{ meaningful_name }}</span></div>
+            </div>
+            <div class="overview-column">
+                <div><strong>Last Modification Date</strong> <span>{{ last_modification_date }}</span></div>
+                <div><strong>MD5</strong> <span>{{md5}}</span></div>
+                <div><strong>SHA-1</strong> <span>{{sha1}}</span></div>
+                <div><strong>SHA-256</strong> <span>{{sha256}}</span></div>
+                <div><strong>Last Modification Name</strong> <span>{{ last_modification_name }}</span></div>
+                <div><strong>Type Description</strong> <span>{{ type_description }}</span></div>
+                <div><strong>Magic</strong> <span>{{ magic }}</span></div>
+                <div><strong>Unique Sources</strong> <span>{{ unique_sources }}</span></div>
+                <div><strong>Crowdsourced YARA Results</strong> <span>
+                    <ul>
+                        {% for result in crowdsourced_yara_results %}
+                            <li><strong>Ruleset Name:</strong> {{ result.ruleset_name }} - <strong>Description:</strong> {{ result.description }} - <strong>Author:</strong> {{ result.author }}</li>
+                        {% endfor %}
+                    </ul>
+                </span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <div class="card custom-card">
+    <div class="card-header">
+        <h2>Deep CDR™ Regeneration</h2>
+        <p>After Data Sanitization</p>
+    </div>
+    <div class="card-body">
+        <div class="table-container">
+            <table>
+                <tr>
+                    <th>Object</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>Custom XML</td>
+                    <td>Not Present</td>
+                </tr>
+                <tr>
+                    <td>External Image</td>
+                    <td>Not Present</td>
+                </tr>
+                <tr>
+                    <td>Hyperlink</td>
+                    <td>Not Present</td>
+                </tr>
+                <tr>
+                    <td>Image</td>
+                    <td>Not Present</td>
+                </tr>
+            </table>
+            <div class="button-container">
+                <button class="btn-download">Download Sanitized Version</button>
+            </div>
+        </div>
+        <div class="icon-container">
+            <img src="{% static 'assets/img/complaint.png' %}" alt="Icon">
+        </div>
+    </div>
+</div>
+
+
+
+  
+</div>
+{% endblock content %}
+
+{% block javascripts %}
+<!-- jQuery and DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    $('#file-info').DataTable();
+    $('#otx-info').DataTable();
+    $('#vt-info').DataTable();
+    $('#vt-av-results').DataTable();
+  });
+</script>
+{% endblock javascripts %}

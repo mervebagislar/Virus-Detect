@@ -1,0 +1,61 @@
+
+{% extends "layouts/base.html" %}
+
+{% block title %} Maps {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+  <div class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-plain">
+          <div class="card-header">
+            Send an Email for Spam Detection
+          </div>
+          <div class="card-body">
+            <form method="post" action="{% url 'predict_email' %}">
+                {% csrf_token %}
+                
+                <!-- E-posta metni için giriş alanı -->
+                <div>
+                    <label for="email_text">Email Text:</label>
+                    <textarea id="email_text" name="email_text" rows="10" cols="50" placeholder="Enter email text here..." required>{{ email_text|default:'' }}</textarea>
+                </div>
+                
+                <!-- Gönder butonu -->
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+            
+            <!-- Hata mesajı veya sonuçları gösterme -->
+            {% if error %}
+                <div class="error">
+                    <p>{{ error }}</p>
+                </div>
+            {% endif %}
+            
+            {% if predictions %}
+                <div class="results">
+                    <h2>Predictions:</h2>
+                    <ul>
+                        {% for name, prediction in predictions.items %}
+                            <li>{{ name }}: {{ prediction }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+{% endblock javascripts %}

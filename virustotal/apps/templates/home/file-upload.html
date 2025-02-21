@@ -1,0 +1,457 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} User Profile {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+body {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Montserrat', sans-serif;
+}
+.form-container {
+	width: 78vw;
+	height: 80vh;
+  background-image: url("https://cdn.pixabay.com/photo/2015/05/04/20/03/purple-wallpaper-752886_1280.jpg");
+	display: flex;
+   	justify-content: center;
+	align-items: center;
+}
+.upload-files-container {
+	background-image: url("https://img.freepik.com/free-photo/studio-background-concept-abstract-empty-light-gradient-purple-studio-room-background-product-plain-studio-background_1258-54491.jpg");
+	width: 1000px;
+	padding: 30px 60px;
+	border-radius: 40px;
+	display: flex;
+   	align-items: center;
+   	justify-content: center;
+	flex-direction: column;
+	box-shadow: rgba(0, 0, 0, 0.24) 0px 10px 20px, rgba(0, 0, 0, 0.28) 0px 6px 6px;
+}
+.drag-file-area {
+	border: 2px dashed #7b2cbf;
+	border-radius: 40px;
+	margin: 10px 0 15px;
+	padding: 30px 50px;
+	width: 900px;
+  height:280px;
+	text-align: center;
+}
+.drag-file-area .upload-icon {
+	font-size: 50px;
+  color: #000000;
+}
+.drag-file-area h3 {
+  color: #000000;
+	font-size: 26px;
+	margin: 15px 0;
+}
+.drag-file-area label {
+  margin: 25px 0;
+  color: #000000;
+	font-size: 19px;
+}
+.drag-file-area label .browse-files-text {
+  margin-right: 15px;
+	color: #7b2cbf;
+	font-weight: bolder;
+	cursor: pointer;
+}
+.browse-files span {
+	position: relative;
+	top: -25px;
+  
+}
+.default-file-input {
+	opacity: 0;
+}
+.cannot-upload-message {
+	background-color: #ffc6c4;
+	font-size: 17px;
+	display: flex;
+	align-items: center;
+	margin: 5px 0;
+	padding: 5px 10px 5px 30px;
+	border-radius: 5px;
+	color: #BB0000;
+	display: none;
+}
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+.cannot-upload-message span, .upload-button-icon {
+	padding-right: 10px;
+}
+.cannot-upload-message span:last-child {
+	padding-left: 20px;
+	cursor: pointer;
+}
+.file-block {
+	color: #f7fff7;
+	background-color: #7b2cbf;
+  transition: all 1s;
+	width: 390px;
+	position: relative;
+	display: none;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	margin: 10px 0 15px;
+	padding: 10px 20px;
+	border-radius: 25px;
+	cursor: pointer;
+  
+}
+.file-info {
+	display: flex;
+	align-items: center;
+	font-size: 15px;
+}
+.file-icon {
+	margin-right: 10px;
+}
+.file-name, .file-size {
+	padding: 0 3px;
+}
+.remove-file-icon {
+	cursor: pointer;
+}
+.progress-bar {
+	display: flex;
+	position: absolute;
+	bottom: 0;
+	left: 4.5%;
+	width: 0;
+	height: 5px;
+	border-radius: 25px;
+	background-color: #4BB543;
+}
+.upload-button {
+	font-family: 'Montserrat';
+	background-color: #dc4fcf;
+	color: #f7fff7;
+	display: flex;
+	align-items: center;
+	font-size: 18px;
+	border: none;
+	border-radius: 20px;
+	margin: 10px;
+	padding: 7.5px 50px;
+	cursor: pointer;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #2A2E37;
+}
+
+.search {
+  width: 100px;
+  height: 100px;
+  margin: 40px auto 0;
+  background-color: #242628;
+  position: relative;
+  overflow: hidden;
+  transition: all .5s ease;
+}
+
+.search:before {
+  content: '';
+  display: block;
+  width: 3px;
+  height: 100%;
+  position: relative;
+  background-color: #00FEDE;
+  transition: all .5s ease;
+}
+
+.search.open {
+  width: 420px;
+}
+
+.search.open:before {
+  height: 60px;
+  margin: 20px 0 20px 30px;
+  position: absolute;
+}
+
+.search-box {
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+  color: #fff;
+  padding: 20px 100px 20px 45px;
+  font-size: 40px;
+}
+
+.search-box:focus {
+  outline: none;
+}
+
+.search-button {
+  width: 100px;
+  height: 100px;
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.search-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+  border: 3px solid #00FEDE;
+  display: block;
+  position: relative;
+  margin-left: 5px;
+  transition: all .5s ease;
+}
+
+.search-icon:before {
+  content: '';
+  width: 3px;
+  height: 15px;
+  position: absolute;
+  right: -2px;
+  top: 30px;
+  display: block;
+  background-color: #00FEDE;
+  transform: rotate(-45deg);
+  transition: all .5s ease;
+}
+
+.search-icon:after {
+  content: '';
+  width: 3px;
+  height: 15px;
+  position: absolute;
+  right: -12px;
+  top: 40px;
+  display: block;
+  background-color: #00FEDE;
+  transform: rotate(-45deg);
+  transition: all .5s ease;
+}
+
+.search.open .search-icon {
+  margin: 0;
+  width: 60px;
+  height: 60px;
+  border-radius: 60px;
+}
+
+.search.open .search-icon:before {
+  transform: rotate(52deg);
+  right: 22px;
+  top: 23px;
+  height: 18px;
+}
+
+.search.open .search-icon:after {
+  transform: rotate(-230deg);
+  right: 22px;
+  top: 13px;
+  height: 18px;
+}
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="title">File Upload</h5>
+          </div>
+          <div class="card-body">
+            <link href="https://fonts.googleapis.com/css?family=Material+Icons|Material+Icons+Outlined" rel="stylesheet" >
+            <form class="form-container" action="{% url 'upload_and_analyze' %}" method="POST" enctype='multipart/form-data' id="uploadForm">
+              {% csrf_token %}
+              <div class="upload-files-container">
+                <div class="drag-file-area">
+                  <span class="material-icons-outlined upload-icon"> file_upload </span>
+                  <h3 class="dynamic-message"> Drag & drop any file here </h3>
+                  <label class="label"> 
+                    <span class="browse-files">
+                        <span>or</span>
+                        <input type="file" name="file" class="default-file-input"/> 
+                        <span class="browse-files-text">Browse File</span> 
+                        <span>from device</span> 
+                    </span> 
+                </label>
+                </div>
+                <span class="cannot-upload-message"> <span class="material-icons-outlined">error</span> Please select a file first <span class="material-icons-outlined cancel-alert-button">cancel</span> </span>
+                <div class="file-block">
+                  <div class="file-info"> <span class="material-icons-outlined file-icon">description</span> <span class="file-name"> </span> | <span class="file-size">  </span> </div>
+                  <span class="material-icons remove-file-icon">delete</span>
+                  <div class="progress-bar"> </div>
+                </div>
+                <button type="submit" class="upload-button"> Upload </button>
+              </div>
+            </form>
+          </div>
+          <div class="content">
+            <div class="search">
+              <input type="search" class="search-box" />
+              <span class="search-button">
+                <span class="search-icon"></span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+     
+    </div>
+  </div>    
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+var isAdvancedUpload = function() {
+  var div = document.createElement('div');
+  return (('draggable' in div) || ('ondragstart' in div && 'ondrop' in div)) && 'FormData' in window && 'FileReader' in window;
+}();
+
+let draggableFileArea = document.querySelector(".drag-file-area");
+let browseFileText = document.querySelector(".browse-files");
+let uploadIcon = document.querySelector(".upload-icon");
+let dragDropText = document.querySelector(".dynamic-message");
+let fileInput = document.querySelector(".default-file-input");
+let cannotUploadMessage = document.querySelector(".cannot-upload-message");
+let cancelAlertButton = document.querySelector(".cancel-alert-button");
+let uploadedFile = document.querySelector(".file-block");
+let fileName = document.querySelector(".file-name");
+let fileSize = document.querySelector(".file-size");
+let progressBar = document.querySelector(".progress-bar");
+let removeFileButton = document.querySelector(".remove-file-icon");
+let uploadButton = document.querySelector(".upload-button");
+let fileFlag = 0;
+
+fileInput.addEventListener("click", () => {
+	fileInput.value = '';
+	console.log(fileInput.value);
+});
+
+fileInput.addEventListener("change", e => {
+	console.log(" > " + fileInput.value)
+	uploadIcon.innerHTML = 'check_circle';
+	dragDropText.innerHTML = 'File Dropped Successfully!';
+	document.querySelector(".label").innerHTML = `drag & drop or <span class="browse-files"> <input type="file" class="default-file-input" style=""/> <span class="browse-files-text" style="top: 0;"> browse file</span></span>`;
+	uploadButton.innerHTML = `Upload`;
+	fileName.innerHTML = fileInput.files[0].name;
+	fileSize.innerHTML = (fileInput.files[0].size/1024).toFixed(1) + " KB";
+	uploadedFile.style.cssText = "display: flex;";
+	progressBar.style.width = 0;
+	fileFlag = 0;
+});
+
+uploadButton.addEventListener("click", () => {
+	let isFileUploaded = fileInput.value;
+	if(isFileUploaded != '') {
+		if (fileFlag == 0) {
+    		fileFlag = 1;
+    		var width = 0;
+    		var id = setInterval(frame, 50);
+    		function frame() {
+      			if (width >= 390) {
+        			clearInterval(id);
+					    uploadButton.innerHTML = `<span class="material-icons-outlined upload-button-icon"> check_circle </span> Uploaded`;
+                  // Formu gönderme işlemi
+              let form = document.getElementById("uploadForm");
+              form.submit(); // Formu gönderir
+      			} else {
+        			width += 5;
+        			progressBar.style.width = width + "px";
+      			}
+    		}
+  		}
+	} else {
+		cannotUploadMessage.style.cssText = "display: flex; animation: fadeIn linear 1.5s;";
+	}
+});
+
+cancelAlertButton.addEventListener("click", () => {
+	cannotUploadMessage.style.cssText = "display: none;";
+});
+
+if(isAdvancedUpload) {
+	["drag", "dragstart", "dragend", "dragover", "dragenter", "dragleave", "drop"].forEach( evt => 
+		draggableFileArea.addEventListener(evt, e => {
+			e.preventDefault();
+			e.stopPropagation();
+		})
+	);
+
+	["dragover", "dragenter"].forEach( evt => {
+		draggableFileArea.addEventListener(evt, e => {
+			dragDropText.innerHTML = 'Drop your file to upload';
+		});
+	});
+
+	draggableFileArea.addEventListener("drop", e => {
+		uploadIcon.innerHTML = 'check_circle';
+		dragDropText.innerHTML = 'File Dropped Successfully!';
+		document.querySelector(".label").innerHTML = `drag & drop or <span class="browse-files"> <input type="file" class="default-file-input" style=""/> <span class="browse-files-text" style="top: 0;"> browse file</span></span>`;
+		uploadButton.innerHTML = `Upload`;
+		
+		let files = e.dataTransfer.files;
+		console.log(files[0].name + " " + (files[0].size/1024).toFixed(1));
+		fileInput.files = files;
+		fileName.innerHTML = files[0].name;
+		fileSize.innerHTML = (files[0].size/1024).toFixed(1) + " KB";
+		uploadedFile.style.cssText = "display: flex;";
+		progressBar.style.width = 0;
+		fileFlag = 0;
+	});
+}
+
+removeFileButton.addEventListener("click", () => {
+	uploadedFile.style.cssText = "display: none;";
+	fileInput.value = '';
+	uploadIcon.innerHTML = 'file_upload';
+	dragDropText.innerHTML = 'Drag & drop any file here';
+	document.querySelector(".label").innerHTML = `or <span class="browse-files"> <input type="file" class="default-file-input" style=""/> <span class="browse-files-text"> browse file</span> <span>from device</span> </span>`;
+	uploadButton.innerHTML = `Upload`;
+});
+document.querySelector(".upload-button").addEventListener("click", () => {
+  let form = document.querySelector("form");
+  let formData = new FormData(form);
+
+  fetch("{% url 'upload' %}", {
+      method: "POST",
+      body: formData,
+      headers: {
+          'X-CSRFToken': '{{ csrf_token }}'  // CSRF token'ı ekleyin
+      }
+  })
+  .then(response => response.text())
+  .then(data => {
+      // İşlem sonuçlarını işleyin
+      console.log(data);
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+});
+
+  $('.search-button').click(function(){
+    $(this).parent().toggleClass('open');
+  });
+
+
+</script>
+{% endblock javascripts %}

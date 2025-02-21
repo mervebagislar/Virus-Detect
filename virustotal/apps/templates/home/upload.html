@@ -1,0 +1,34 @@
+<!-- home/upload.html -->
+
+{% extends "layouts/base.html" %}
+
+{% block title %}URL Tehdit Analizi{% endblock %}
+
+{% block content %}
+<div class="content">
+    <h2>URL Tehdit Analizi Sonuçları</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <label for="url">Kontrol Edilecek URL:</label>
+        <input type="text" name="url" id="url" required>
+        <button type="submit">Gönder</button>
+    </form>
+
+    {% if otx_result %}
+        <h3>URL: {{ url }}</h3>
+        <p><strong>AlienVault OTX Sonucu:</strong></p>
+
+        {% if otx_result.error %}
+            <p style="color: red;">{{ otx_result.error }}</p>
+        {% else %}
+            <ul>
+                <li><strong>Pulse Count:</strong> {{ otx_result.pulse_info.count }}</li>
+                <li><strong>Threat Score:</strong> {{ otx_result.threat_score }}</li>
+                <li><strong>Malware Families:</strong> {{ otx_result.malware_families }}</li>
+                <!-- Diğer ilgili bilgileri burada göster -->
+            </ul>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock content %}

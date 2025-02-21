@@ -1,0 +1,17 @@
+<!-- home/upload.html -->
+
+{% extends "layouts/base.html" %}
+
+{% block title %}URL Tehdit Analizi{% endblock %}
+
+{% block content %}
+<div class="content">
+  <h1>IP Threat Intelligence</h1>
+  <form method="post" action="{% url 'get_ip_threat_intel' %}">
+      {% csrf_token %}
+      <label for="ip_address">IP Address:</label>
+      <input type="text" id="ip_address" name="ip_address" required>
+      <button type="submit">Check Threat Intelligence</button>
+  </form>
+</div>
+{% endblock content %}
