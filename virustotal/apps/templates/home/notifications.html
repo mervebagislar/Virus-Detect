@@ -24,73 +24,163 @@
     <!-- Specific Page CSS goes HERE  -->
     {% block stylesheets %}
      <style>
+      body {
+        position: relative;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+      }
+      
+      .wrapper {
+        position: relative;
+        z-index: 0;
+      }
+      
+      .video-background {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        z-index: -10 !important;
+        object-fit: cover !important;
+        pointer-events: none;
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        background: #000;
+      }
+      
       .main-panel {
-      background-image: url("{% static 'assets/img/4.webp' %}"); /* Arka plan resmi yolu */
-      background-size: cover; /* Resmin tüm arka planı kaplamasını sağlar */
-      background-position: center; /* Resmi ortalar */
-      background-repeat: no-repeat; /* Resmin tekrar etmesini engeller */
-      background-attachment: fixed; /* Kaydırma sırasında arka planın sabit kalmasını sağlar */
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center
-  
-    }
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0;
+        overflow: hidden;
+        z-index: 1;
+        background: transparent;
+      }
+      
+      .main-panel::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: -1;
+        pointer-events: none;
+      }
+      
+      .main-panel > * {
+        position: relative;
+        z-index: 1;
+      }
     .search {
-      background-color: #fff;
-      padding: 4px;
-      border-radius: 5px;
-      width: 70%;
-      
-      
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 12px;
+      border-radius: 12px;
+      width: 85%;
+      max-width: 900px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(102, 126, 234, 0.15);
+      border: 1px solid rgba(102, 126, 234, 0.2);
+      transition: all 0.3s ease;
+  }
+  
+  .search:hover {
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(102, 126, 234, 0.25);
+      border-color: rgba(102, 126, 234, 0.35);
   }
   
   ::placeholder {
-      color: #eee;
-      opacity: 1
+      color: #999;
+      opacity: 1;
   }
   
   .search-2 {
       position: relative;
-      width: 100%
+      width: 100%;
+      z-index: 1;
+      margin-bottom: 0;
+  }
+  
+  .form-container {
+      position: relative !important;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
   }
   
   .search-2 input {
-      height: 30px;
-      border: none;
+      height: 34px !important;
+      min-height: 34px !important;
+      border: 1px solid rgba(102, 126, 234, 0.2);
       width: 100%;
-      padding-left: 40px;
-      padding-right: 100px;
-      padding-top:20px;
-      padding-bottom:10px;
+      padding: 0 12px 0 36px;
+      font-size: 12px;
+      box-sizing: border-box;
+      border-radius: 8px;
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      font-weight: 500;
+      transition: all 0.3s ease;
   }
   
   .search-2 input:focus {
-      border-color: none;
-      box-shadow: none;
-      outline: none
+      outline: none;
+      border-color: #667eea;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   }
   
   .search-2 i {
       position: absolute;
-      top: 12px;
-      left: 10px;
-      font-size: 24px;
-      color:#813fa8
+      top: 50%;
+      transform: translateY(-50%);
+      left: 12px;
+      font-size: 14px;
+      color: #667eea;
+      z-index: 2;
   }
   
   .search-2 button {
       position: absolute;
       right: 1px;
-      top: 0px;
+      top: 1px;
       border: none;
-      height: 40px;
-      background-color: white;
+      height: 32px;
+      background-color: #813fa8;
       color: #fff;
-      width: 40px;
-      border-radius: 4px;
-      
-     
+      width: 80px;
+      border-radius: 0 8px 8px 0;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+  }
+  
+  .search-2 button:hover {
+      background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(102, 126, 234, 0.5);
+  }
+  
+  .test-button:hover {
+      background: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca) !important;
+      background-color: #ba54f5 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 3px 12px rgba(186, 84, 245, 0.4);
   }
   .container{
     padding-left:96px;
@@ -112,79 +202,165 @@
 }
 
   @media (max-width:800px) {
+      .search {
+          width: 90%;
+          padding: 15px;
+      }
+      
+      .form-container {
+          gap: 12px;
+      }
+      
       .search-2 i {
-          left: 4px;
-          color:#813fa8;
-          
-          
+          left: 12px;
+          font-size: 16px;
       }
   
       .search-2 input {
-          padding-left: 34px
+          padding-left: 40px;
+          height: 40px !important;
+          font-size: 13px;
       }
-  
-      .search-2 button {
-        
-          height: 37px;
-          top: 5px;
-        
+      
+      .file-upload-section {
+          padding: 10px;
+          gap: 10px;
+      }
+      
+      .file-upload-label {
+          padding: 6px 12px;
+          font-size: 13px;
+      }
+      
+      .file-status {
+          font-size: 12px;
+      }
+      
+      .button-group {
+          flex-direction: column;
+          gap: 10px;
+      }
+      
+      .test-button,
+      .submit-button {
+          width: 100% !important;
+          height: 32px !important;
+          font-size: 11px;
+      }
+      
+      .search-2 input {
+          height: 32px !important;
+          font-size: 11px;
       }
       
      
   }
+  .file-upload-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(102, 126, 234, 0.05);
+    border-radius: 8px;
+    border: 1px dashed rgba(102, 126, 234, 0.25);
+    transition: all 0.3s ease;
+  }
+  
+  .file-upload-section:hover {
+    background: rgba(102, 126, 234, 0.08);
+    border-color: rgba(102, 126, 234, 0.4);
+  }
+  
   .file-upload-label {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    font-size: 18px; /* Simge boyutu */
-    color:#813fa8; 
-    
-}
+    font-size: 12px;
+    color: #667eea;
+    padding: 5px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    background: rgba(102, 126, 234, 0.1);
+    border: 1px solid rgba(102, 126, 234, 0.25);
+    font-weight: 600;
+    gap: 4px;
+  }
+  
+  .file-upload-label:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    border-color: transparent;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+  }
+  
+  .file-status {
+    color: #666;
+    font-size: 11px;
+    font-style: italic;
+  }
 
 .file-input {
     display: none;
-    
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 2px;
 }
 
 .submit-button {
-  margin-top: 5px;
-  margin-right: 0px;
-   /* Butonu sola kaydırmak için sağa boşluk ekler */
-  background-color: #813fa8 !important; /* Mor renk */
-  color: #fff !important; /* Beyaz metin rengi */
+  flex: 1;
+  background: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca) !important;
+  background-color: #e14eca !important;
+  color: #fff !important;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  height: 45px !important; 
-  width: 120px !important; /* Butonun genişliğini artırır */
-  padding: 10px 10px; /* Butonun içindeki metni ortalar ve genişliğini artırır */
-  display: flex;
+  height: 32px !important; 
+  padding: 0;
+  display: flex !important;
   align-items: center;
   justify-content: center;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(225, 78, 202, 0.3);
 }
 
 .submit-button:hover {
-    background-color: #6d2a8a;
+    background: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca) !important;
+    background-color: #ba54f5 !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(186, 84, 245, 0.4);
 }
 .submit-button i {
-  margin-right: 65px !important; /* Simge ve metin arasına boşluk ekler */
+  margin-right: 8px !important;
 }
 .test-button {
-  background-color: #813fa8 !important; 
-    position: relative;
-    color: #fff;
-    right: 0px; /* Process butonunu en sağa yerleştirir */
-    left: 750px;
-    top: -60px;
-    height: 60px;
-    width: 50px;
-    border-radius: 5px;
-    border: none;
-    display: flex; /* Flexbox ile içeriği ortalar */
-    align-items: center;
-    justify-content: center;
+  flex: 1;
+  background: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca) !important;
+  background-color: #e14eca !important;
+  color: #fff !important;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 12px;
+  box-shadow: 0 2px 8px rgba(225, 78, 202, 0.3);
 }
 .test-button:hover {
-  background-color: pink;
+  background: linear-gradient(to bottom left, #e14eca, #ba54f5, #e14eca) !important;
+  background-color: #ba54f5 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(186, 84, 245, 0.4);
 }
     
   
@@ -194,6 +370,10 @@
 
 </head>
 <body class="">
+    <video class="video-background" autoplay muted loop playsinline preload="auto">
+        <source src="{% static 'assets/mp4/video.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
 
     <div class="wrapper">
 
@@ -205,26 +385,38 @@
             
             <div class="container"> 
               <div class="search"> 
-                <div class="row">  
-                  <div class="col-md-12">
-                    <div class="search-2"> 
-                      <i class='fa fa-search' style="width:21px; opacity:0;" ></i>              
-                        <form id="multiActionForm" class="form-container" action="{% url 'upload_and_analyze' %}" 
-                        method="POST" enctype="multipart/form-data" id="uploadForm">
-                          {% csrf_token %}
-                          <input type="text" name="ip_address" placeholder="Search or scan a URL">
-                          <label for="file-upload" class="file-upload-label" >
-                            <i class="fas fa-paperclip"></i>
-                            <input id="file-upload" type="file" name="file" class="file-input" />
-                          </label>         
-                          <button type="button" onclick="submitForm('search_action')" class="test-button"> Ara</button>
-                          <button type="button" onclick="submitForm('upload_action')" class="submit-button">Dosya Yükle</button>
-                        </form>
-                      
-               
-                    </div> 
-                  </div>            
-                </div>  
+                <form id="multiActionForm" class="form-container" action="{% url 'upload_and_analyze' %}" 
+                method="POST" enctype="multipart/form-data" id="uploadForm">
+                  {% csrf_token %}
+                  
+                  <!-- Search Input -->
+                  <div class="search-2">
+                    <i class='fa fa-search'></i>
+                    <input type="text" name="ip_address" placeholder="Search or scan a URL, IP address, or file hash..." />
+                  </div>
+                  
+                  <!-- File Upload Section -->
+                  <div class="file-upload-section">
+                    <label for="file-upload" class="file-upload-label">
+                      <i class="fas fa-paperclip"></i>
+                      <span>Dosya Seç</span>
+                    </label>
+                    <input id="file-upload" type="file" name="file" class="file-input" style="display: none;" />
+                    <span class="file-status" id="file-status">Dosya seçilmedi</span>
+                  </div>
+                  
+                  <!-- Button Group -->
+                  <div class="button-group">
+                    <button type="button" onclick="submitForm('search_action')" class="test-button">
+                      <i class="fas fa-search"></i>
+                      Ara
+                    </button>
+                    <button type="button" onclick="document.getElementById('file-upload').click();" class="submit-button">
+                      <i class="fas fa-upload"></i>
+                      Dosya Yükle
+                    </button>
+                  </div>
+                </form>
               </div>
             
             </div>
@@ -256,6 +448,61 @@
         }
         form.submit();  // Formu gönder
     }
+    
+    // Dosya seçildiğinde durumu güncelle ve formu gönder
+    document.addEventListener('DOMContentLoaded', function() {
+      const fileInput = document.getElementById('file-upload');
+      const fileStatus = document.getElementById('file-status');
+      const form = document.getElementById('multiActionForm');
+      
+      if (fileInput && fileStatus && form) {
+        // Dosya seçildiğinde durumu güncelle ve formu gönder
+        fileInput.addEventListener('change', function(e) {
+          if (this.files && this.files.length > 0) {
+            // Dosya durumunu güncelle
+            fileStatus.textContent = this.files[0].name;
+            fileStatus.style.color = '#667eea';
+            fileStatus.style.fontWeight = '600';
+            
+            // Form action'ı dosya yükleme için ayarla (emin olmak için)
+            form.action = "{% url 'upload_and_analyze' %}";
+            form.method = "POST";
+            
+            // Formu gönder
+            form.submit();
+          } else {
+            fileStatus.textContent = 'Dosya seçilmedi';
+            fileStatus.style.color = '#666';
+            fileStatus.style.fontWeight = 'normal';
+          }
+        });
+      }
+      
+      // Video debug
+      const video = document.querySelector('.video-background');
+      if (video) {
+        console.log('Video element found:', video);
+        console.log('Video src:', video.querySelector('source')?.src);
+        console.log('Video readyState:', video.readyState);
+        
+        video.addEventListener('loadeddata', function() {
+          console.log('Video loaded successfully');
+        });
+        
+        video.addEventListener('error', function(e) {
+          console.error('Video error:', e);
+          console.error('Video error code:', video.error?.code);
+          console.error('Video error message:', video.error?.message);
+        });
+        
+        // Video'yu zorla oynat
+        video.play().catch(function(error) {
+          console.error('Video play error:', error);
+        });
+      } else {
+        console.error('Video element not found!');
+      }
+    });
   </script>
 {% endblock javascripts %}
 

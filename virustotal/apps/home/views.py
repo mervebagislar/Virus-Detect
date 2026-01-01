@@ -6,28 +6,32 @@ import whois
 from django import template
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.template import loader
 from django.urls import reverse
 from django.core.files.storage import FileSystemStorage
+from django.contrib import messages
 import requests
-import openai
 from django.views.decorators.csrf import csrf_exempt
 from dotenv import load_dotenv
 
+load_dotenv()
 
 @login_required(login_url="/login/")#Kullanıcının giriş yapması gerekir
 def notification_view(request):
     return render(request, 'home/notifications.html') 
-load_dotenv()
-openai.api_key = settings.OPENAI_API_KEY
 
 def chatbot(request):
     if request.method == 'POST':
         user_message = request.POST.get('message', '')
 
         try:
+            # OpenAI'yi sadece gerektiğinde import et
+            import openai
+            openai.api_key = getattr(settings, 'OPENAI_API_KEY', None)
+            
             # OpenAI API'ye istek gönder
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo",
@@ -43,6 +47,8 @@ def chatbot(request):
             # Yanıtı JSON olarak döndür
             return JsonResponse({'response': bot_reply})
 
+        except ImportError:
+            return JsonResponse({'response': 'OpenAI kütüphanesi yüklenemedi. Lütfen gerekli paketleri yükleyin.'})
         except Exception as e:
             return JsonResponse({'response': f'Bir hata oluştu: {str(e)}'})
 
@@ -71,7 +77,7 @@ def get_ip_threat_intel(request):
             
             # VirusTotal API'den tehdit bilgilerini al
             vt_url = f"https://www.virustotal.com/api/v3/ip_addresses/{ip_address}"
-            vt_headers = {'x-apikey': settings.VIRUSTOTAL_API_KEY}
+            vt_headers = {'x-apikey': settings.VT_API_KEY}
             vt_response = requests.get(vt_url, headers=vt_headers)
             vt_data = vt_response.json() if vt_response.status_code == 200 else {}
 
@@ -223,6 +229,9 @@ def format_unix_timestamp(timestamp):
     return 'No timestamp provided'
 
 def upload_and_analyze(request):
+    # Varsayılan context - hata durumları için
+    context = {}
+    
     if request.method == 'POST' and 'file' in request.FILES:
         uploaded_file = request.FILES['file']
         fs = FileSystemStorage()
@@ -236,7 +245,7 @@ def upload_and_analyze(request):
 
         # VirusTotal API ile dosyayı yükleme
         vt_upload_url = 'https://www.virustotal.com/api/v3/files'
-        vt_upload_headers = {'x-apikey': settings.VIRUSTOTAL_API_KEY}
+        vt_upload_headers = {'x-apikey': settings.VT_API_KEY}
         with open(file_path, 'rb') as f:
             files = {'file': f}
             vt_upload_response = requests.post(vt_upload_url, headers=vt_upload_headers, files=files)
@@ -249,12 +258,17 @@ def upload_and_analyze(request):
             # Analiz sonuçlarını almak için bekleyin
             if vt_analysis_id:
                 analysis_complete = False
-                while not analysis_complete:
-                    time.sleep(10)  # Analiz sonuçlarının hazır olması için bekleyin
+                max_attempts = 30  # Maksimum 30 deneme (5 dakika)
+                attempt = 0
+                
+                while not analysis_complete and attempt < max_attempts:
+                    attempt += 1
+                    if attempt > 1:  # İlk denemede bekleme yok
+                        time.sleep(10)  # Analiz sonuçlarının hazır olması için bekleyin
 
                     # VirusTotal API ile analiz sonuçlarını alma
                     vt_analysis_url = f"https://www.virustotal.com/api/v3/analyses/{vt_analysis_id}"
-                    vt_analysis_headers = {'x-apikey': settings.VIRUSTOTAL_API_KEY}
+                    vt_analysis_headers = {'x-apikey': settings.VT_API_KEY}
                     vt_analysis_response = requests.get(vt_analysis_url, headers=vt_analysis_headers)
                     
 
@@ -263,7 +277,18 @@ def upload_and_analyze(request):
                         vt_analysis_data = vt_analysis_response.json().get('data', {}).get('attributes', {})
                         vt_meta_file=vt_analysis_response.json().get('meta',{}).get('file_info',{})
                         vt_analysis_results = vt_analysis_data.get('results', {})
+                        status = vt_analysis_data.get('status', 'unknown')
                        
+                        # Status kontrolü - eğer tamamlanmamışsa devam et
+                        if status not in ['completed', 'failed']:
+                            print(f"Analiz devam ediyor... Status: {status}, Deneme: {attempt}/{max_attempts}")
+                            continue  # Döngüye devam et
+                        
+                        # Status 'failed' ise hata mesajı ile dön
+                        if status == 'failed':
+                            context = {'error': 'VirusTotal analizi başarısız oldu.'}
+                            analysis_complete = True
+                            return render(request, 'home/show_file_threat_intel.html', context)
                         
 
                         analysis_list = []
@@ -307,10 +332,13 @@ def upload_and_analyze(request):
                         
                         vt_total_votes = vt_analysis_data.get('stats', {})
                         votes_list = []
-                        # Başlangıçta toplam değerleri 0 olarak başlatıyoruz
+                        # Başlangıçta tüm değerleri 0 olarak başlatıyoruz
+                        malicious_votes = suspicious_votes = undetected_votes = harmless_votes = 0
+                        timeout_votes = confirmed_votes = failure_votes = unsupported_votes = 0
                         total_malicious = total_suspicious = total_undetected = total_harmless = 0
                         total_timeout = total_confirmed = total_failure = total_unsupported = 0
 
+                        # Stats'tan değerleri al
                         for key, value in vt_total_votes.items():
                             if key == "malicious":
                                 malicious_votes = value
@@ -339,24 +367,25 @@ def upload_and_analyze(request):
                             'confirmed_votes': confirmed_votes,
                             'failure_votes': failure_votes,
                             'unsupported_votes': unsupported_votes,
-                        }),
+                        })
 
-                            # Her bir oy kategorisini topluyoruz
-                        total_malicious += malicious_votes
-                        total_suspicious += suspicious_votes
-                        total_undetected += undetected_votes
-                        total_harmless += harmless_votes
-                        total_timeout += timeout_votes
-                        total_confirmed += confirmed_votes
-                        total_failure += failure_votes
-                        total_unsupported += unsupported_votes
+                        # Her bir oy kategorisini topluyoruz
+                        total_malicious = malicious_votes
+                        total_suspicious = suspicious_votes
+                        total_undetected = undetected_votes
+                        total_harmless = harmless_votes
+                        total_timeout = timeout_votes
+                        total_confirmed = confirmed_votes
+                        total_failure = failure_votes
+                        total_unsupported = unsupported_votes
 
-                        # Tüm oyların toplamını hesaplıyoruz
-                        total_votes = (total_malicious + total_suspicious + total_undetected +
-                                    total_harmless + total_timeout + total_confirmed + 
-                                    total_failure + total_unsupported)
-                        malware_votes=(total_malicious + total_suspicious +
-                                    total_confirmed + total_failure + total_unsupported)
+                        # Toplam engine sayısı - analiz yapan tüm engine'lerin sayısı
+                        total_votes = len(vt_analysis_results) if vt_analysis_results else 0
+                        
+                        # Malware oyları (malicious + suspicious + confirmed + failure)
+                        # type-unsupported zararlı olarak sayılmaz
+                        malware_votes = (total_malicious + total_suspicious + 
+                                        total_confirmed + total_failure)
                         vt_reputation = 'N/A'  # Reputation genellikle analiz sonuçlarında yer almaz
                         vt_scan_date = vt_analysis_data.get('date', 'N/A')
                         status = vt_analysis_data.get('status', 'unknown')
@@ -454,9 +483,13 @@ def upload_and_analyze(request):
                             return render(request, 'home/show_file_threat_intel.html', context)
 
                     else:
-                        vt_analysis_data = {'error': 'VirusTotal analiz sonuçları alınamadı'}
-                        context = {'error': 'VirusTotal analiz sonuçları alınamadı'}
-                        analysis_complete = True
+                        print(f"VirusTotal analiz yanıtı başarısız: {vt_analysis_response.status_code}")
+                        if attempt >= max_attempts:
+                            vt_analysis_data = {'error': 'VirusTotal analiz sonuçları alınamadı (timeout)'}
+                            context = {'error': 'VirusTotal analiz sonuçları alınamadı. Analiz çok uzun sürdü, lütfen daha sonra tekrar deneyin.'}
+                            analysis_complete = True
+                        else:
+                            continue  # Tekrar dene
             else:
                 vt_analysis_data = {'error': 'VirusTotal analiz ID alınamadı'}
                 context = {'error': 'VirusTotal analiz ID alınamadı'}
@@ -469,7 +502,7 @@ def upload_and_analyze(request):
     return render(request, 'home/notifications.html')
 def make_virustotal_api_call(file):
     headers = {
-        'x-apikey': settings.VIRUSTOTAL_API_KEY}
+        'x-apikey': settings.VT_API_KEY}
     files = {'file': file}
     response = requests.post('https://www.virustotal.com/api/v3/files', headers=headers, files=files)
     response.raise_for_status()
@@ -542,6 +575,17 @@ def pages(request):
         load_template = request.path.split('/')[-1]
         if load_template == 'admin':
             return HttpResponseRedirect(reverse('admin:index'))
+        
+        # Block access to tables.html, typography.html, map.html, and chatbot.html
+        blocked_pages = ['tables.html', 'typography.html', 'map.html', 'chatbot.html']
+        if load_template in blocked_pages:
+            html_template = loader.get_template('home/page-404.html')
+            return HttpResponse(html_template.render(context, request), status=404)
+        
+        # Handle user.html with backend
+        if load_template == 'user.html':
+            return user_profile(request)
+        
         context['segment'] = load_template
 
         html_template = loader.get_template('home/' + load_template)
@@ -552,4 +596,68 @@ def pages(request):
     except:
         html_template = loader.get_template('home/page-500.html')
         return HttpResponse(html_template.render(context, request))
+
+
+@login_required(login_url="/login/")
+def user_profile(request):
+    """
+    Kullanıcı profil sayfası - GET: Profil bilgilerini gösterir, POST: Profil bilgilerini günceller
+    """
+    user = request.user
+    
+    if request.method == 'POST':
+        try:
+            # Form verilerini al
+            username = request.POST.get('username', '').strip()
+            email = request.POST.get('email', '').strip()
+            first_name = request.POST.get('first_name', '').strip()
+            last_name = request.POST.get('last_name', '').strip()
+            
+            # Kullanıcı bilgilerini güncelle
+            if username and username != user.username:
+                # Kullanıcı adı değişikliği kontrolü
+                if User.objects.filter(username=username).exclude(pk=user.pk).exists():
+                    messages.error(request, 'Bu kullanıcı adı zaten kullanılıyor.')
+                else:
+                    user.username = username
+            
+            if email:
+                user.email = email
+            
+            if first_name:
+                user.first_name = first_name
+            
+            if last_name:
+                user.last_name = last_name
+            
+            # Şifre değişikliği (opsiyonel)
+            new_password = request.POST.get('new_password', '').strip()
+            confirm_password = request.POST.get('confirm_password', '').strip()
+            
+            if new_password:
+                if new_password == confirm_password:
+                    if len(new_password) >= 8:
+                        user.set_password(new_password)
+                        messages.success(request, 'Şifreniz başarıyla güncellendi.')
+                    else:
+                        messages.error(request, 'Şifre en az 8 karakter olmalıdır.')
+                else:
+                    messages.error(request, 'Şifreler eşleşmiyor.')
+            
+            user.save()
+            messages.success(request, 'Profil bilgileriniz başarıyla güncellendi.')
+            
+            return redirect('/user.html')
+            
+        except Exception as e:
+            messages.error(request, f'Bir hata oluştu: {str(e)}')
+            return redirect('/user.html')
+    
+    # GET isteği - Profil bilgilerini göster
+    context = {
+        'user': user,
+        'segment': 'user',
+    }
+    
+    return render(request, 'home/user.html', context)
 
