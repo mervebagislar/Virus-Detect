@@ -2,7 +2,6 @@
 
 <div align="center">
 
-![Virus Detect](apps/static/assets/readMe-img/whitemode.png)
 
 **Kapsamlı güvenlik analiz platformu - Dosya, IP, URL analizi ve Email spam tespiti**
 
