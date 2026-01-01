@@ -40,7 +40,6 @@
 - 🌐 **IP Tehdit İstihbaratı**: IP adresleri için detaylı güvenlik analizi
 - 🔗 **URL Analizi**: Şüpheli URL'lerin güvenlik kontrolü
 - 📧 **Email Spam Tespiti**: 10 farklı ML modeli ile email spam tespiti
-- 🤖 **AI Chatbot**: Google Gemini API ile entegre akıllı chatbot
 - 🔐 **İki Faktörlü Doğrulama**: Admin paneli için güvenli giriş
 
 ---
@@ -98,7 +97,7 @@
 
 - **VirusTotal API v3**: Dosya ve IP analizi
 - **OTX AlienVault API**: Tehdit istihbaratı
-- **Google Gemini API**: AI chatbot
+
 
 ### Güvenlik
 
@@ -435,11 +434,6 @@ Giriş yaparken:
 4. 10 farklı ML modelinin tahminlerini görüntüleyin
 5. Spam olasılık yüzdesini kontrol edin
 
-### AI Chatbot
-
-1. Chatbot arayüzüne gidin
-2. Güvenlik ile ilgili sorularınızı sorun
-3. AI asistanından anında yanıt alın
 
 ---
 
@@ -495,11 +489,6 @@ Katkılarınızı bekliyoruz! Lütfen şu adımları izleyin:
 4. Branch'inizi push edin (`git push origin feature/AmazingFeature`)
 5. Pull Request oluşturun
 
----
-
-## 📝 Lisans
-
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
 
 ---
 
@@ -507,8 +496,8 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 
 **Virus Detect Development Team**
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: support@virusdetect.com
+- GitHub: [@mervebagislar](https://github.com/mervebagislar)
+- Email: mervebagislar07@gmail.com
 
 ---
 
@@ -516,7 +505,6 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 
 - [VirusTotal](https://www.virustotal.com/) - Dosya ve IP analizi API'si
 - [OTX AlienVault](https://otx.alienvault.com/) - Tehdit istihbaratı platformu
-- [Google Gemini](https://gemini.google.com/) - AI chatbot API'si
 - [Django](https://www.djangoproject.com/) - Web framework
 - [scikit-learn](https://scikit-learn.org/) - Machine learning kütüphanesi
 
@@ -525,17 +513,14 @@ Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosy
 ## 📞 İletişim
 
 Sorularınız veya önerileriniz için:
-
-- 📧 Email: support@virusdetect.com
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/virus-detect/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/yourusername/virus-detect/discussions)
-
+- Email: mervebagislar07@gmail.com
+- https://mervebagislar.com
 ---
 
 <div align="center">
 
 **⭐ Bu projeyi beğendiyseniz yıldız vermeyi unutmayın! ⭐**
 
-Made with ❤️ by Virus Detect Team
+Made with ❤️ by Merve Bağışlar
 
 </div>
