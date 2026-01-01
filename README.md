@@ -312,7 +312,7 @@ Giriş yaparken:
 2. Authenticator uygulamanızdan 6 haneli kodu girin
 3. Başarıyla giriş yapın
 
-![2FA Login](apps/static/assets/readMe-img/login.png)
+![2FA Login](virustotal/apps/static/assets/readMe-img/login.png)
 
 ---
 
@@ -322,10 +322,10 @@ Giriş yaparken:
 
 <div align="center">
 
-![Login Page](apps/static/assets/readMe-img/giriş.png)
+![Login Page](virustotal/apps/static/assets/readMe-img/giriş.png)
 *Giriş Sayfası*
 
-![Signup Page](apps/static/assets/readMe-img/signup.png)
+![Signup Page](virustotal/apps/static/assets/readMe-img/signup.png)
 *Kayıt Sayfası*
 
 </div>
@@ -334,16 +334,16 @@ Giriş yaparken:
 
 <div align="center">
 
-![File Analysis](apps/static/assets/readMe-img/analiz_file.png)
+![File Analysis](virustotal/apps/static/assets/readMe-img/analiz_file.png)
 *Dosya Yükleme ve Analiz*
 
-![File Analysis Results](apps/static/assets/readMe-img/analiz_file1.png)
+![File Analysis Results](virustotal/apps/static/assets/readMe-img/analiz_file1.png)
 *Detaylı Analiz Sonuçları*
 
-![File Analysis Details](apps/static/assets/readMe-img/analiz_file2.png)
+![File Analysis Details](virustotal/apps/static/assets/readMe-img/analiz_file2.png)
 *Dosya Özellikleri ve Hash Bilgileri*
 
-![File Analysis Table](apps/static/assets/readMe-img/analiz_file3.png)
+![File Analysis Table](virustotal/apps/static/assets/readMe-img/analiz_file3.png)
 *Antivirüs Motor Sonuçları Tablosu*
 
 </div>
@@ -352,19 +352,19 @@ Giriş yaparken:
 
 <div align="center">
 
-![IP Analysis](apps/static/assets/readMe-img/analiz_ip.png)
+![IP Analysis](virustotal/apps/static/assets/readMe-img/analiz_ip.png)
 *IP Adresi Analiz Sayfası*
 
-![IP Analysis Results](apps/static/assets/readMe-img/analiz_ip2.png)
+![IP Analysis Results](virustotal/apps/static/assets/readMe-img/analiz_ip2.png)
 *IP Tehdit İstihbaratı*
 
-![IP Analysis Details](apps/static/assets/readMe-img/analiz_ip3.png)
+![IP Analysis Details](virustotal/apps/static/assets/readMe-img/analiz_ip3.png)
 *Detaylı IP Bilgileri*
 
-![IP Analysis Map](apps/static/assets/readMe-img/analiz_ip4.png)
+![IP Analysis Map](virustotal/apps/static/assets/readMe-img/analiz_ip4.png)
 *Coğrafi Konum Bilgisi*
 
-![IP Analysis Stats](apps/static/assets/readMe-img/analiz_ip5.png)
+![IP Analysis Stats](virustotal/apps/static/assets/readMe-img/analiz_ip5.png)
 *İstatistiksel Analiz*
 
 </div>
@@ -373,7 +373,7 @@ Giriş yaparken:
 
 <div align="center">
 
-![Email Spam Detection](apps/static/assets/readMe-img/email.png)
+![Email Spam Detection](virustotal/apps/static/assets/readMe-img/email.png)
 *Email Spam Tespit Arayüzü*
 
 </div>
@@ -382,16 +382,16 @@ Giriş yaparken:
 
 <div align="center">
 
-![Admin Panel](apps/static/assets/readMe-img/admin.png)
+![Admin Panel](virustotal/apps/static/assets/readMe-img/admin.png)
 *Admin Panel Ana Sayfa*
 
-![Admin Settings](apps/static/assets/readMe-img/admin1.png)
+![Admin Settings](virustotal/apps/static/assets/readMe-img/admin1.png)
 *Admin Ayarları*
 
-![Admin Users](apps/static/assets/readMe-img/admin2.png)
+![Admin Users](virustotal/apps/static/assets/readMe-img/admin2.png)
 *Kullanıcı Yönetimi*
 
-![Admin Dashboard](apps/static/assets/readMe-img/admin3.png)
+![Admin Dashboard](virustotal/apps/static/assets/readMe-img/admin3.png)
 *Dashboard ve İstatistikler*
 
 </div>
@@ -400,7 +400,7 @@ Giriş yaparken:
 
 <div align="center">
 
-![User Profile](apps/static/assets/readMe-img/profile.png)
+![User Profile](virustotal/apps/static/assets/readMe-img/profile.png)
 *Kullanıcı Profil Sayfası*
 
 </div>
@@ -489,6 +489,11 @@ Katkılarınızı bekliyoruz! Lütfen şu adımları izleyin:
 4. Branch'inizi push edin (`git push origin feature/AmazingFeature`)
 5. Pull Request oluşturun
 
+
+---
+## 📝 Lisans
+
+Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için `LICENSE` dosyasına bakın.
 
 ---
 
