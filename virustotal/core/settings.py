@@ -34,7 +34,8 @@ CSRF_TRUSTED_ORIGINS = ['http://localhost:85', 'http://127.0.0.1', 'https://' + 
 
 INSTALLED_APPS = [
     # 'admin_two_factor.apps.TwoStepVerificationConfig',
-    'admin_two_factor',
+    'admin_two_factor',  # admin_two_factor'ı jazzmin'den önce yükle ki template override edilebilsin
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -150,3 +151,25 @@ ADMIN_TWO_FACTOR_NAME ="virustotal"
 MODEL_DIR = os.path.join(BASE_DIR, 'apps', 'models')
 #############################################################
 #############################################################
+OTX_API_KEY = env('OTX_API_KEY', default=None)
+VT_API_KEY = env('VT_API_KEY', default=None)
+GEMINI_API_KEY = env('GEMINI_API_KEY', default=None)
+JAZZMIN_SETTINGS = {
+    "site_title": "VirusTotal Admin",
+    "site_header": "Security Dashboard",
+    "site_brand": "IP Threat Panel",
+    "welcome_sign": "Admin Paneline Hoş Geldiniz",
+    "copyright": "© 2025",
+
+    "topmenu_links": [
+        {"name": "Site", "url": "/", "new_window": True},
+    ],
+
+    "icons": {
+        "auth": "fas fa-users-cog",
+        "auth.user": "fas fa-user",
+        "auth.group": "fas fa-users",
+    },
+
+    "theme": "darkly",  # dark, flatly, cosmo, lumen
+}

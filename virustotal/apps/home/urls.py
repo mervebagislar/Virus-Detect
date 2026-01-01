@@ -11,6 +11,7 @@ urlpatterns = [
     path('upload/analyze/', views.upload_and_analyze, name='upload_and_analyze'),
     path('api/chat/', views.chatbot, name='chat_view'),
     path("upload/",views.file_upload,name="upload"),
+    path('user.html', views.user_profile, name='user_profile'),
     # path("upload/",views.upload,name="upload"),
     re_path(r'^.*\.*', views.pages, name='pages'),
 ]

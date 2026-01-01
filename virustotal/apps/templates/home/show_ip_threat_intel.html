@@ -6,27 +6,35 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <style>
   body {
-    background-image: url("{% static 'assets/img/2.png' %}"); /* Arka plan resmi yolu */
-    background-size: cover; /* Resmin kapsayıcıya sığmasını sağlar */
-    background-position: center; /* Resmin ortalanmasını sağlar */
-    background-repeat: no-repeat; /* Resmin tekrar etmesini engeller */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-attachment: fixed;
     color: #D0D0D5;
-    font-family: Arial, sans-serif;
-      
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
   }
+  
+  .content {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
   .card {
-     /* Kenar çizgilerini kaldır */
-    border-radius: 10px; /* Kart kenarlarını yuvarla */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover efektleri için geçiş animasyonları */
-    position: relative; /* Trend ikonları için */
-    overflow: hidden; /* Taşan öğeleri gizle */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
     margin: 20px auto !important;
-}
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  }
 
 .card:hover {
-    transform: translateY(-10px); /* Hover edildiğinde yukarı doğru hareket etsin */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Hover edildiğinde gölge ekle */
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* Kart İçeriği */
@@ -67,11 +75,22 @@
     color: #dc3545; /* Hata rengi */
 }
 .whois-card{
-    width:92%;
-    margin: 0 auto;
+    width: 92%;
+    margin: 30px auto;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px;
 }
+
 .whois-card h3{
-    margin:10px;
+    margin: 0 0 20px 0;
+    padding: 0 0 15px 0;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-weight: 600;
+    font-size: 24px;
 }
 
 /* İkonlar için animasyon */
@@ -84,82 +103,143 @@
     }
 }
 .container {
-      margin-top:20px;
+      margin-top: 30px;
       width: 100%;
       margin: 0 auto;
-      padding-top: 20px;
+      padding: 20px;
 }
+
 h1 {
-      font-size: 24px;
-      margin-bottom: 20px;
-      color: #E5E5E5;
+      font-size: 28px;
+      margin-bottom: 25px;
+      color: #fff;
+      font-weight: 600;
 }
  
 .analysis-overview-card {
-    
-    height:500px;
-    width: 100%; /* İstediğiniz genişlik */
-    margin: 0 auto; /* Ortaya hizala */
-     /* Maksimum genişlik */
+    height: 500px;
+    width: 100%;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .basic-properties{
-    height:500px;
-    border-radius:10px;
-    width: 100%; /* İstediğiniz genişlik */
-    margin: 0 auto; /* Ortaya hizala */
-    max-width: 900px; /* Maksimum genişlik */
+    height: auto;
+    min-height: 500px;
+    border-radius: 20px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
  }
+ 
  .basic-properties h2{
-  padding:10px;
+  padding: 0 0 20px 0;
+  margin: 0 0 20px 0;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
  }
 .security-vendors-analysis-card {
-    width: 92%; /* İstediğiniz genişlik */
-    margin: 0 auto; /* Ortaya hizala */
+    width: 92%;
+    margin: 30px auto;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px;
 }
 
 .card h2 {
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #F5F5F5;
+      font-size: 24px;
+      margin-bottom: 20px;
+      color: #fff;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+}
+
+.card-header {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%);
+    padding: 20px 30px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px 20px 0 0;
+}
+
+.card-header h3, .card-header h4, .card-header h5 {
+    color: #fff;
+    margin: 0;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 30px;
 }
 .table {
     width: 100%;
     border-collapse: collapse;
+    background: transparent;
 }
 
 .table th, .table td {
-    padding: 10px;
-    border-bottom: 1px solid #3A3A55;
+    padding: 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .table th {
     text-align: left;
-    background-color: #3A3A55;
-    color: #D5D5DD;
+    background: rgba(102, 126, 234, 0.2);
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .table td {
-    background-color: #29293F;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .map {
-    margin-bottom:-10px;
-    height: 500px; /* Haritanın yüksekliği */
-    width: 100%; /* Haritanın genişliği */
-    border-radius: 8px;
+    margin-bottom: 0;
+    height: 500px;
+    width: 100%;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.map-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 pre {
-      background-color: #29293F;
-      padding: 10px;
-      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 15px;
       overflow-x: auto;
       overflow-y: auto; 
-      width: 800px;
+      width: 100%;
+      max-width: 800px;
       max-height: 300px;
-      color: #D5D5DD;
+      color: rgba(255, 255, 255, 0.9);
       font-family: 'Courier New', Courier, monospace;
-      box-sizing: border-box; /* Padding'i genişliğe dahil et */
-      white-space: pre-wrap; /* Taşmayı önlemek için satırları sar */
+      box-sizing: border-box;
+      white-space: pre-wrap;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 pre::-webkit-scrollbar {
     width: 8px;
@@ -181,15 +261,27 @@ pre::-webkit-scrollbar-track {
 .analysis-table {
       width: 48%;
       margin-bottom: 20px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      overflow: hidden;
 }
   .card.details-card{
-    width:92% !important;
-    margin: 0 auto;
-   
+    width: 92% !important;
+    margin: 30px auto;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 30px;
 }
+
 .card.details-card h1{
-   margin:20px;
-   
+   margin: 0 0 25px 0;
+   padding: 0 0 20px 0;
+   border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+   color: #fff;
+   font-weight: 600;
+   font-size: 28px;
 }
     /* Önceki stil kurallarını burada ekleyin */
 .chart-area {
@@ -238,10 +330,13 @@ pre::-webkit-scrollbar-track {
             text-align: center; /* Yatay ortalama */
       }
       .weekly-card{
-        height:500px;
-        width: 100%; /* İstediğiniz genişlik */
-        margin: 0 auto; /* Ortaya hizala */
-     /* Maksimum genişlik */
+        height: 500px;
+        width: 100%;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
       }
 
       .chart-row{
@@ -253,10 +348,6 @@ pre::-webkit-scrollbar-track {
       .analysisChartLine{
         height:600px;
       }
-      context = {
-        'otx_asn': otx_asn.title(),  # İlk harfleri büyüt
-        # Diğer context verileri...
-    }
     #vt-details-table td, #vt-details-table th {
         max-width: 200px; /* Maksimum genişliği sınırla */
         overflow: hidden;
@@ -291,8 +382,135 @@ pre::-webkit-scrollbar-track {
         padding-left: 5px; /* Üç noktanın metinden ayrılması için boşluk */
     }
     .custom-card-content {
-        padding: 20px; /* İçerik boşluğu */
-        border: 3px solid purple;
+        padding: 25px;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+    }
+    
+    /* Modern Badge Styles */
+    .badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .badge-danger {
+        background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+        color: #fff;
+    }
+    
+    .badge-warning {
+        background: linear-gradient(135deg, #ffd93d, #f6c23e);
+        color: #1a1a2e;
+    }
+    
+    .badge-success {
+        background: linear-gradient(135deg, #51cf66, #40c057);
+        color: #fff;
+    }
+    
+    .badge-light {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .content {
+            padding: 10px;
+        }
+        
+        .card {
+            margin: 10px auto !important;
+            border-radius: 15px;
+        }
+        
+        .custom-card-content {
+            padding: 15px;
+        }
+        
+        .analysis-table-container {
+            flex-direction: column;
+        }
+        
+        .analysis-table {
+            width: 100%;
+        }
+        
+        .security-vendors-analysis-card,
+        .whois-card,
+        .card.details-card {
+            width: 100% !important;
+            margin: 15px auto;
+            padding: 20px;
+        }
+        
+        .basic-properties,
+        .weekly-card,
+        .analysis-overview-card {
+            height: auto;
+            min-height: 400px;
+        }
+        
+        .map {
+            height: 300px;
+        }
+    }
+    
+    /* Smooth Animations */
+    * {
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    /* Scrollbar Styling */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8));
+        border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, rgba(102, 126, 234, 1), rgba(118, 75, 162, 1));
+    }
+    
+    .custom-bg-color {
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 600;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .card-body h3, .card-body h4 {
+        color: #fff;
+        font-weight: 600;
+        margin: 8px 0;
+    }
+    
+    .border-light {
+        border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .border-light:last-child {
+        border-right: none !important;
     }
 </style>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -761,11 +979,11 @@ pre::-webkit-scrollbar-track {
 {% endblock content %}
 
 {% block javascripts %}
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <!-- DataTables JS -->
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const analysisCounts = {
@@ -778,15 +996,20 @@ pre::-webkit-scrollbar-track {
     
         // Tablo satırlarından sonuçları al
         document.querySelectorAll('.analysis-table tbody tr').forEach(row => {
-            const analysis = row.querySelector('td:nth-child(2) span').innerText.trim().toLowerCase();
-            if (analysisCounts.hasOwnProperty(analysis)) {
-                analysisCounts[analysis]++;
+            const spanElement = row.querySelector('td:nth-child(2) span');
+            if (spanElement) {
+                const analysis = spanElement.innerText.trim().toLowerCase();
+                if (analysisCounts.hasOwnProperty(analysis)) {
+                    analysisCounts[analysis]++;
+                }
             }
         });
     
         // Chart.js ile çizgi grafiği oluşturma
-        const ctx = document.getElementById('analysisChartLine').getContext('2d');
-        new Chart(ctx, {
+        const analysisChartLineElement = document.getElementById('analysisChartLine');
+        if (analysisChartLineElement && typeof Chart !== 'undefined') {
+            const ctx = analysisChartLineElement.getContext('2d');
+            new Chart(ctx, {
             type: 'line',  // Çizgi grafiği
             data: {
                 labels: ['Malicious', 'Suspicious', 'Clean', 'Unrated', 'Malware'],
@@ -817,24 +1040,38 @@ pre::-webkit-scrollbar-track {
                 }
             }
         });
+        }
     });
     document.addEventListener('DOMContentLoaded', function() {
-        // API'den gelen latitude ve longitude değerlerini buraya ekleyeceksiniz
-        const latitude = {{ otx_latitude }};
-        const longitude = {{ otx_longitude }};
-    
-        // Leaflet haritasını başlat
-        const map = L.map('map').setView([latitude, longitude], 10);
-    
-        // OpenStreetMap katmanını ekle
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-    
-        // Konum marker'ını ekle
-        L.marker([latitude, longitude]).addTo(map)
-            .bindPopup('Konum: ' + latitude + ', ' + longitude)
-            .openPopup();
+        // Leaflet'in yüklendiğini kontrol et
+        if (typeof L !== 'undefined') {
+            // API'den gelen latitude ve longitude değerlerini buraya ekleyeceksiniz
+            const latitude = {{ otx_latitude|default:"0" }};
+            const longitude = {{ otx_longitude|default:"0" }};
+            
+            // Map elementinin varlığını kontrol et
+            const mapElement = document.getElementById('map');
+            if (mapElement && latitude && longitude && latitude !== 'N/A' && longitude !== 'N/A' && !isNaN(latitude) && !isNaN(longitude)) {
+                try {
+                    // Leaflet haritasını başlat
+                    const map = L.map('map').setView([parseFloat(latitude), parseFloat(longitude)], 10);
+                
+                    // OpenStreetMap katmanını ekle
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                
+                    // Konum marker'ını ekle
+                    L.marker([parseFloat(latitude), parseFloat(longitude)]).addTo(map)
+                        .bindPopup('Konum: ' + latitude + ', ' + longitude)
+                        .openPopup();
+                } catch (e) {
+                    console.error('Harita yükleme hatası:', e);
+                }
+            }
+        } else {
+            console.warn('Leaflet kütüphanesi yüklenemedi');
+        }
     });
     document.addEventListener('DOMContentLoaded', function() {
         // Kart verilerini almak için bir nesne
@@ -848,15 +1085,20 @@ pre::-webkit-scrollbar-track {
     
         // Tablo satırlarından sonuçları al
         document.querySelectorAll('.analysis-table tbody tr').forEach(row => {
-            const analysis = row.querySelector('td:nth-child(2) span').innerText.trim().toLowerCase();
-            if (analysisCounts.hasOwnProperty(analysis)) {
-                analysisCounts[analysis]++;
+            const spanElement = row.querySelector('td:nth-child(2) span');
+            if (spanElement) {
+                const analysis = spanElement.innerText.trim().toLowerCase();
+                if (analysisCounts.hasOwnProperty(analysis)) {
+                    analysisCounts[analysis]++;
+                }
             }
         });
     
         // Donut grafiği oluşturma
-        const ctx = document.getElementById('donutChart2').getContext('2d');
-        new Chart(ctx, {
+        const donutChart2Element = document.getElementById('donutChart2');
+        if (donutChart2Element && typeof Chart !== 'undefined') {
+            const ctx = donutChart2Element.getContext('2d');
+            new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Malicious', 'Suspicious', 'Clean', 'Unrated', 'Malware'],
@@ -902,6 +1144,7 @@ pre::-webkit-scrollbar-track {
                 }
             }
         });
+        }
     });
    
     document.addEventListener('DOMContentLoaded', function() {
@@ -933,15 +1176,20 @@ pre::-webkit-scrollbar-track {
     
         // Tablo satırlarından sonuçları al
         document.querySelectorAll('.analysis-table tbody tr').forEach(row => {
-            const analysis = row.querySelector('td:nth-child(2) span').innerText.trim().toLowerCase();
-            if (analysisCounts.hasOwnProperty(analysis)) {
-                analysisCounts[analysis]++;
+            const spanElement = row.querySelector('td:nth-child(2) span');
+            if (spanElement) {
+                const analysis = spanElement.innerText.trim().toLowerCase();
+                if (analysisCounts.hasOwnProperty(analysis)) {
+                    analysisCounts[analysis]++;
+                }
             }
         });
     
         // Chart.js için Doughnut Chart konfigürasyonu
-        const ctx = document.getElementById('donutChart').getContext('2d');
-        const myChart = new Chart(ctx, {
+        const donutChartElement = document.getElementById('donutChart');
+        if (donutChartElement && typeof Chart !== 'undefined') {
+            const ctx = donutChartElement.getContext('2d');
+            const myChart = new Chart(ctx, {
             type: 'doughnut',  // Grafik tipi
             data: {
                 labels: ['Malicious', 'Suspicious', 'Clean', 'Unrated', 'Malware'],  // Kategoriler
@@ -975,34 +1223,41 @@ pre::-webkit-scrollbar-track {
                 }
             }
         });
+        }
     });
     
     
 </script>
-<script>
+    <script>
     $(document).ready(function() {
-        $('#vt-details-table').DataTable({
-            "paging": false, // Sayfalama yok
-            "searching": true, // Arama yok
-            "info": false, // Bilgi kısmını gizle
-            "ordering": true // Sıralama yok
-        });
+        const vtDetailsTable = $('#vt-details-table');
+        if (vtDetailsTable.length) {
+            vtDetailsTable.DataTable({
+                "paging": false, // Sayfalama yok
+                "searching": true, // Arama yok
+                "info": false, // Bilgi kısmını gizle
+                "ordering": true // Sıralama yok
+            });
+        }
     });
     </script>
     <script>
-        document.getElementById('showMore').addEventListener('click', function() {
-            var container = document.getElementById('textContainer');
-            if (container.classList.contains('expand')) {
-                container.classList.remove('expand');
-                this.textContent = '...'; // Üç noktayı tekrar göster
-            } else {
-                container.classList.add('expand');
-                this.textContent = '↩'; // Kısaltmayı gösteren bir simge
+        document.addEventListener('DOMContentLoaded', function() {
+            const showMoreElement = document.getElementById('showMore');
+            if (showMoreElement) {
+                showMoreElement.addEventListener('click', function() {
+                    var container = document.getElementById('textContainer');
+                    if (container) {
+                        if (container.classList.contains('expand')) {
+                            container.classList.remove('expand');
+                            this.textContent = '...'; // Üç noktayı tekrar göster
+                        } else {
+                            container.classList.add('expand');
+                            this.textContent = '↩'; // Kısaltmayı gösteren bir simge
+                        }
+                    }
+                });
             }
         });
     </script>
-    
-    
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 {% endblock javascripts %}

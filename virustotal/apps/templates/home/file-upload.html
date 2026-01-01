@@ -154,12 +154,13 @@ body {
 
 .search {
   width: 100px;
-  height: 100px;
+  height: 60px;
   margin: 40px auto 0;
   background-color: #242628;
   position: relative;
   overflow: hidden;
   transition: all .5s ease;
+  border-radius: 30px;
 }
 
 .search:before {
@@ -174,11 +175,12 @@ body {
 
 .search.open {
   width: 420px;
+  height: 60px;
 }
 
 .search.open:before {
-  height: 60px;
-  margin: 20px 0 20px 30px;
+  height: 40px;
+  margin: 10px 0 10px 30px;
   position: absolute;
 }
 
@@ -189,8 +191,9 @@ body {
   border: none;
   background: transparent;
   color: #fff;
-  padding: 20px 100px 20px 45px;
-  font-size: 40px;
+  padding: 15px 90px 15px 45px;
+  font-size: 18px;
+  line-height: 30px;
 }
 
 .search-box:focus {
@@ -198,24 +201,27 @@ body {
 }
 
 .search-button {
-  width: 100px;
-  height: 100px;
-  display: block;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   right: 0;
   top: 0;
-  padding: 20px;
+  padding: 0;
   cursor: pointer;
+  background: transparent;
 }
 
 .search-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 40px;
+  width: 35px;
+  height: 35px;
+  border-radius: 35px;
   border: 3px solid #00FEDE;
   display: block;
   position: relative;
-  margin-left: 5px;
+  margin: 0 auto;
   transition: all .5s ease;
 }
 
@@ -246,24 +252,24 @@ body {
 }
 
 .search.open .search-icon {
-  margin: 0;
-  width: 60px;
-  height: 60px;
-  border-radius: 60px;
+  margin: 0 auto;
+  width: 35px;
+  height: 35px;
+  border-radius: 35px;
 }
 
 .search.open .search-icon:before {
   transform: rotate(52deg);
-  right: 22px;
-  top: 23px;
-  height: 18px;
+  right: 10px;
+  top: 12px;
+  height: 12px;
 }
 
 .search.open .search-icon:after {
   transform: rotate(-230deg);
-  right: 22px;
-  top: 13px;
-  height: 18px;
+  right: 10px;
+  top: 8px;
+  height: 12px;
 }
 </style>
 {% endblock stylesheets %}
@@ -427,29 +433,46 @@ removeFileButton.addEventListener("click", () => {
 	document.querySelector(".label").innerHTML = `or <span class="browse-files"> <input type="file" class="default-file-input" style=""/> <span class="browse-files-text"> browse file</span> <span>from device</span> </span>`;
 	uploadButton.innerHTML = `Upload`;
 });
-document.querySelector(".upload-button").addEventListener("click", () => {
-  let form = document.querySelector("form");
-  let formData = new FormData(form);
-
-  fetch("{% url 'upload' %}", {
-      method: "POST",
-      body: formData,
-      headers: {
-          'X-CSRFToken': '{{ csrf_token }}'  // CSRF token'ı ekleyin
-      }
-  })
-  .then(response => response.text())
-  .then(data => {
-      // İşlem sonuçlarını işleyin
-      console.log(data);
-  })
-  .catch(error => {
-      console.error('Error:', error);
-  });
-});
 
   $('.search-button').click(function(){
     $(this).parent().toggleClass('open');
+  });
+
+  // Arama kutusu ve buton yüksekliklerini kontrol et
+  $(document).ready(function() {
+    setTimeout(function() {
+      const searchBox = $('.search-box');
+      const searchButton = $('.search-button');
+      const searchContainer = $('.search');
+      
+      if (searchBox.length) {
+        const boxHeight = searchBox.outerHeight();
+        const boxComputed = window.getComputedStyle(searchBox[0]).height;
+        console.log('=== Arama Kutusu Yükseklik Kontrolü ===');
+        console.log('Search Box outerHeight():', boxHeight + 'px');
+        console.log('Search Box computed height:', boxComputed);
+        console.log('Search Box CSS height:', searchBox.css('height'));
+        console.log('Search Box padding-top:', searchBox.css('padding-top'));
+        console.log('Search Box padding-bottom:', searchBox.css('padding-bottom'));
+      }
+      
+      if (searchButton.length) {
+        const buttonHeight = searchButton.outerHeight();
+        const buttonComputed = window.getComputedStyle(searchButton[0]).height;
+        console.log('Search Button outerHeight():', buttonHeight + 'px');
+        console.log('Search Button computed height:', buttonComputed);
+        console.log('Search Button CSS height:', searchButton.css('height'));
+      }
+      
+      if (searchContainer.length) {
+        const containerHeight = searchContainer.outerHeight();
+        const containerComputed = window.getComputedStyle(searchContainer[0]).height;
+        console.log('Search Container outerHeight():', containerHeight + 'px');
+        console.log('Search Container computed height:', containerComputed);
+        console.log('Search Container CSS height:', searchContainer.css('height'));
+      }
+      console.log('========================================');
+    }, 500);
   });
 
 
